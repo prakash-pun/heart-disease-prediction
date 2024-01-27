@@ -7,5 +7,5 @@ git branch to see your active branch
 git add .
 git status
 git commit -m "your commit message"
-git staus
+git status
 git push
