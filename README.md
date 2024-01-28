@@ -37,7 +37,7 @@ git pull # to pull new changes from github
 |____ docs # Add your project report, task report e.g. word ppt or excel file here
 |____ models # Trained and Serialized Models
 |____ notebooks # Jupter Notebooks
-|____ reports # General analysis as HTML or PDF
+|____ reports # General analysis as charts in HTML or PDF or IMAGES
 |____ src # Source code that is used in the project
 ```
 
