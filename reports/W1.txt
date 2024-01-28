@@ -1,3 +1,0 @@
-Tirth Patel:
-	- Taught Git, Github, Pull and Push
-	- Search the Datasets for project
