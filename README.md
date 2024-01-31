@@ -33,11 +33,11 @@ git pull # to pull new changes from github
 ## Folder Structure
 
 ```bash
-|____ data # Data sets
-|____ docs # Add your project report, task report e.g. word ppt or excel file here
+|____ data # Data sets e.g excel files
+|____ docs # Add your project report, task report e.g. word files
 |____ models # Trained and Serialized Models
 |____ notebooks # Jupter Notebooks
-|____ reports # General analysis as charts in HTML or PDF or IMAGES
+|____ slides and charts # General analysis as charts in HTML/PDF/PPTS/IMAGES
 |____ src # Source code that is used in the project
 ```
 
