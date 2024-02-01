@@ -1,10 +1,10 @@
 # PROJECT REPORT
 
-# SCOPE OF PROJECT
+## SCOPE OF PROJECT
 
 The primary goal of this project is to develop predictive models that can effectively identify individuals at risk of cardiovascular disease based on their health-related attributes. The dataset captures a diverse set of information, ranging from measurable physical characteristics to lifestyle choices, providing a holistic view for predictive analysis.
 
-# MINIMUM TECHNICAL REQUIREMENTS
+## MINIMUM TECHNICAL REQUIREMENTS
 
 To accomplish project goals, the following minimum technical requirements have been identified:
 
@@ -12,11 +12,10 @@ To accomplish project goals, the following minimum technical requirements have b
 - GIT and GitHub account
 - PYTHON ver3.x and above
 - 8GB of RAM
--
 
 These components are crucial for the foundational infrastructure that will support the project's development lifecycle.
 
-# DATA RESOURCES
+## DATA RESOURCES
 
 Appropriate data resources are essential for informed decision-making and include:
 
@@ -25,7 +24,7 @@ Appropriate data resources are essential for informed decision-making and includ
 
 Access to these resources will enable us to process, analyze, and classify data efficiently, ensuring accuracy in project deliverables.
 
-# DATASET DESCRIPTION
+## DATASET DESCRIPTION
 
 Our data sets encompass a variety of formats and origins. It comprises 70,000 records of patient data, with 11 features and a target variable. The dataset is designed to provide insights into the presence or absence of cardiovascular disease based on various health-related factors.
 
@@ -54,7 +53,7 @@ Each data variable provides unique insights and value to the project, helping dr
 
 Private ([https://app.clickup.com/9014060945/docs/8cmf9wh-574/8cmf9wh-654](https://app.clickup.com/9014060945/docs/8cmf9wh-574/8cmf9wh-654))
 
-# MEMBERS
+## MEMBERS
 
 The project will be undertaken by a dedicated team consisting of skilled individuals, each bringing their expertise:
 
@@ -70,11 +69,11 @@ The project will be undertaken by a dedicated team consisting of skilled individ
 
 Collectively, the team's collaborative efforts will be pivotal in steering the project towards success.
 
-# DATA CLEANING
+## DATA CLEANING
 
 In the initial phase, each team member was assigned a particular column to find descriptive statistics for individual columns and also the relation with the target variable.
 
-# Data Description
+## Data Description
 
 Cardiovascular disease (CVD) is a term that covers several conditions that affect the heart and blood vessels, such as coronary heart disease, stroke, heart failure, and more. CVD is a leading cause of death and disability worldwide, and it can be prevented or delayed by identifying and modifying the risk factors that contribute to its development. Here is a summary:
 
