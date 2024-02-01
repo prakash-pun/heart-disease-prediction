@@ -41,6 +41,18 @@ git pull # to pull new changes from github
 |____ src # Source code that is used in the project
 ```
 
+## Work on Virtualenv
+
+```bash
+> pip install virtualenv
+> python -m venv venv # for windows
+> python3 -m venv venv # for mac
+> venv/Scripts/activate # to activate virtualenv windows
+> source venv/bin/activate # to active virutalenv mac
+> pip freeze > requirements.txt
+> pip install -r requirements.txt # to install all the packages
+```
+
 ## Collaborators
 
 [@amannain122](https://github.com/amannain122)  

@@ -23,4 +23,3 @@ midcor=w100.corr(method='pearson')
 w70=usedf.loc[(usedf.weight>=30) & (usedf.weight<=70)]
 lowcor=w70.corr(method='pearson')
 
-
