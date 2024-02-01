@@ -33,12 +33,22 @@ git pull # to pull new changes from github
 ## Folder Structure
 
 ```bash
-|____ data # Data sets
-|____ docs # Add your project report, task report e.g. word ppt or excel file here
+|____ data # Data sets e.g excel files
+|____ docs # Add your project report, task report e.g. word files
 |____ models # Trained and Serialized Models
 |____ notebooks # Jupter Notebooks
-|____ reports # General analysis as HTML or PDF
+|____ slides and charts # General analysis as charts in HTML/PDF/PPTS/IMAGES
 |____ src # Source code that is used in the project
+```
+
+## Work on Virtualenv
+
+```bash
+> pip install virtualenv
+> python -m venv venv # for windows
+> python3 -m venv venv # for mac
+> venv/Scripts/activate # to activate virtualenv windows
+> source venv/bin/activate # to active virutalenv mac
 ```
 
 ## Collaborators
