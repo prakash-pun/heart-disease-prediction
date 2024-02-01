@@ -1,5 +1,5 @@
 import pandas as pd
-df=pd.read_csv("aman_dataset.csv",index_col=0,na_values=["??","#","???"])
+df=pd.read_csv("aman_py_data.csv",index_col=0,na_values=["??","#","???"])
 
 df1=df.copy(deep=True)
 stats=df1.describe()
@@ -22,3 +22,5 @@ midcor=w100.corr(method='pearson')
 
 w70=usedf.loc[(usedf.weight>=30) & (usedf.weight<=70)]
 lowcor=w70.corr(method='pearson')
+
+
