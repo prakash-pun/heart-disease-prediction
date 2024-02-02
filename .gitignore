@@ -4,3 +4,4 @@ venv
 env
 virtualenv
 .ipynb_checkpoints/
+.idea/
