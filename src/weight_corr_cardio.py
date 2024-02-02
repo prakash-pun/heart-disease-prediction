@@ -6,11 +6,8 @@ stats=df1.describe()
 usedf=df1[['weight','cardio']].copy()
 
 statsuse=usedf.describe()
-usedf.isnull().sum()
-
-usedf.drop(usedf[usedf.weight<30].index,inplace=True)
-correlation=usedf.corr(method='pearson')
-
+usedf.isna().sum()
+usedf.dropna(axis=0,inplace=True)
 head=usedf.head(10)
 tail=usedf.tail()
 
@@ -22,4 +19,5 @@ midcor=w100.corr(method='pearson')
 
 w70=usedf.loc[(usedf.weight>=30) & (usedf.weight<=70)]
 lowcor=w70.corr(method='pearson')
+
 
