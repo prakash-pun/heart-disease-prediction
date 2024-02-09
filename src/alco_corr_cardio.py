@@ -1,3 +1,5 @@
+"""alco_corr_cardio.py"""
+
 import os
 import pandas as pd
 
@@ -8,6 +10,7 @@ df = pd.read_excel(file_path)
 
 print(df.head(5))
 print(df.info())
+
 print(df.isnull().head(5))
 print(df["alco"].isnull())
 print(df["alco"].isna().all())
