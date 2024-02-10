@@ -9,6 +9,7 @@ Original file is located at
 
 import pandas as pd
 import xlrd
+import seaborn as sns
 
 df = pd.read_excel('cleaned_data.xlsx')
 df
@@ -18,17 +19,29 @@ df.head()
 df.info()
 
 my_column = df[['active','cardio']]
-my_column[['active','cardio']].shape
 #print(my_column)
 my_column.head()
 
 my_column.shape
 
+sns.histplot(df['active'], bins = 20 , kde = True)
+plt.title('Active Distribution')
+plt.xlabel('active')
+plt.ylabel('Frequency')
+plt.show()
+
 from matplotlib import pyplot as plt
-df.plot(kind='scatter', x='active', y='bp_lo')
+df.plot(kind='scatter', x='active', y='cardio')
 plt.gca().spines[['top', 'right',]].set_visible(False)
 
+correlation_matrix = df[['active','cardio']].corr()
 
+correlation_matrix
+
+plt.figure(figsize=(8,6))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
+plt.title('Correlation matrix of active and cardio')
+plt.show()
 
 
 
