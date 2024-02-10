@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+ucimlrepo==0.0.3
+=======
 contourpy==1.2.0
 cycler==0.12.1
 fonttools==4.48.1
@@ -16,3 +19,4 @@ scipy==1.12.0
 six==1.16.0
 threadpoolctl==3.2.0
 tzdata==2023.4
+>>>>>>> 719605c4da40cdc19d690a1cc1c4b932e34aa7ab
