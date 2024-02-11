@@ -19,5 +19,3 @@ def split_data():
     # y_train.to_csv("data/train_data_labels.csv", index=False, header=True)
     # y_test.to_csv("data/test_data_labels.csv", index=False, header=True)
 
-
-split_data()
