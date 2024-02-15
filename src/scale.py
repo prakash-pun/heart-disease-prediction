@@ -10,6 +10,7 @@ def scale_minmax():
     print(data_frame.describe())
 
     X = data_frame.drop(columns=["id", "cardio"])
+
     y = data_frame["cardio"]
     id = data_frame["id"]
 
@@ -21,9 +22,9 @@ def scale_minmax():
     print(scaled_data_frame.describe())
 
     scaled_data_frame['cardio'] = y
-    scaled_data_frame["id"] = id
+    scaled_data_frame.insert(loc=0, column='id', value=id)
 
-    scaled_data_frame.to_csv("data/scaled_dataset.csv", index=[False])
+    scaled_data_frame.to_csv("data/scaled_dataset.csv", index=False)
 
     return scaled_data_frame
 
