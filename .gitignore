@@ -1,7 +1,26 @@
+# DotEnv configuration
 .env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Mac OS-specific storage files
 .DS_Store
+
+# virtual env
 venv
 env
 virtualenv
+
+# notebook
 .ipynb_checkpoints/
-.idea/
+
+# Pycharm
+.idea
+
+# VS Code
+.vscode/
+
+# Spyder
+.spyproject/
