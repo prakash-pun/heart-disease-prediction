@@ -1,7 +1,4 @@
-
 """Untitled1.py
-
-
 
 Original file is located at
     https://colab.research.google.com/drive/114EwM4U9MTEpmfYlOUqvKQnr3s-u5-C2
@@ -20,7 +17,6 @@ df['gender'].std()
 
 df['gender'].value_counts()
 
-import matplotlib.pyplot as plt
 df.hist(column='gender', grid=False, edgecolor='black', color='red')
 
 """There are more Females than Males."""
@@ -33,30 +29,18 @@ df['bp_high'].std()
 
 df['bp_high'].value_counts()
 
-import matplotlib.pyplot as plt
 
 df.hist(column='bp_high', grid=False, edgecolor='black', color = 'darkblue')
 
 df['bp_lo'].describe()
 
-import matplotlib.pyplot as plt
 
 df.hist(column='bp_lo', grid=False, edgecolor='black', color='purple')
 
-import pandas as pd
-import matplotlib.pyplot as plt
-df = pd.read_csv('merged_train_data.csv')
-df
-
-import matplotlib.pyplot as plt
-
 df.hist(column='cholesterol_1', grid=False, edgecolor='black', color='blue')
 
-import matplotlib.pyplot as plt
 
 df.hist(column='cholesterol_2', grid=False, edgecolor='blue', color='black')
-
-import matplotlib.pyplot as plt
 
 df.hist(column='cholesterol_3', grid=False, edgecolor='black', color='red')
 
