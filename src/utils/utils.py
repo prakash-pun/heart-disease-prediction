@@ -14,3 +14,6 @@ def get_data():
     df = pd.read_csv(path)
 
     return df
+
+
+print("asdfasdf", get_csv_file("merged_train_data.csv"))
