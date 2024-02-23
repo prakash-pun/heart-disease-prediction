@@ -66,4 +66,4 @@ null=df.isnull().sum()
 print(null)
 
 # % Export Data
-df.to_csv("data/aman_train_data.csv")
+df.to_csv("data/merged_train_data.csv")
