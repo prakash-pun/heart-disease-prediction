@@ -15,6 +15,3 @@ def get_data():
     df = pd.read_csv(path)
 
     return df
-
-
-print(get_csv_file("cleaned_data.csv"))

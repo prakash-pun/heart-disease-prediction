@@ -11,16 +11,6 @@ file_path = os.path.join("D:\\College\\Assignments\\Steps\\cardiovascular-diseas
 df = pd.read_excel(file_path)
 df_cp = df.copy()
 
-print(df_cp.head(5))
-print(df_cp.info())
-
-print(df_cp.isnull().head(5))
-print(df_cp["alco"].isnull())
-print(df_cp["alco"].isna().all())
-print(df_cp["alco"].isin([0,1]).all())
-
-df_cp.shape
-
 correlation_matrix = df_cp[['alco', 'cardio']].corr()
 correlation_matrix
 
