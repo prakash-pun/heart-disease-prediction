@@ -4,12 +4,12 @@ import numpy as np
 
 
 def get_counts(col):
-    levels, counts = np.unique(col, return_counts = True)
+    levels, counts = np.unique(col, return_counts=True)
     return levels, counts
 
 
 def barplot(levels, counts, col):
-    plt.bar(levels, counts, color = "skyblue")
+    plt.bar(levels, counts, color="skyblue")
     plt.xlabel("Levels")
     plt.ylabel("Frequency")
     plt.title(f"Frequency Count of {col} Levels")
@@ -34,7 +34,7 @@ def heatmap(data):
     plt.show()
 
 
-def heat_map(data, method = "pearson"):
+def heat_map(data, method="pearson"):
     """
     Plot a heat map
     Parameters

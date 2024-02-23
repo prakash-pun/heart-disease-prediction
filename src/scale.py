@@ -1,11 +1,8 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from utils import get_csv_file
 
-def scale_minmax():
-    csv_file = get_csv_file("merged_train_data.csv") 
-    data_frame = pd.read_csv(csv_file)
-    
+
+def scale_minmax(data_frame):    
     X = data_frame.drop(columns=["id", "cardio"])
 
     y = data_frame["cardio"]
@@ -24,15 +21,12 @@ def scale_minmax():
     return scaled_data_frame
 
 
-def scale_standard():
-    csv_file = get_csv_file("merged_train_data.csv") 
-    df_framedata = pd.read_csv(csv_file)
-
-    X = df_framedata.drop(columns=["id", "cardio"])
-    id_cardio = df_framedata[['id', 'cardio']]
+def scale_standard(data_frame):
+    X = data_frame.drop(columns=["id", "cardio"])
+    id_cardio = data_frame[['id', 'cardio']]
 
     #adding a new "id" column
-    df_framedata['id'] = range(1, len(df_framedata) + 1)
+    data_frame['id'] = range(1, len(data_frame) + 1)
 
     # with Standard Scaling
     standard_scaler = StandardScaler()
@@ -48,9 +42,7 @@ def scale_standard():
     return result_df
 
 
-def scale_without_bin():
-    data_frame = pd.read_csv("../data/merged_train_data.csv")
-
+def scale_without_bin(data_frame):
     Z = data_frame.loc[:, data_frame.columns.isin(
         ["id","gender", "cardio", "cholesterol", "gluc", "diabetic", "smoke", "alco", "active", "height_m", "cholesterol_1",
         "cholesterol_2", "cholesterol_3", "gluc_1", "gluc_2", "gluc_3", "diabetic_1", "diabetic_2", "diabetic_3"])]
@@ -69,6 +61,6 @@ def scale_without_bin():
 
     result_df = pd.concat([Z, scaled_data_frame], axis=1)
 
-    result_df.to_csv("../data/scaled_without_bin.csv", index=False)
+    result_df.to_csv("data/scaled_without_bin.csv", index=False)
 
     return result_df
