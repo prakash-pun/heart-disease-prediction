@@ -3,20 +3,23 @@ from utils import get_data
 
 
 def split_data():
-    df = get_data()
+    """
+    Split Cleaned Data to test and train data set
+    Returns
+    -------
+    train
+        dataset for train data
+    test 
+        dataset for test data
+    """
+    data_frame = get_data("cleaned_data.csv")
 
-    X = df.drop("cardio", axis = 1)
-    y = df["cardio"] # target
+    X = data_frame.drop("cardio", axis=1)
+    y = data_frame["cardio"]  # target
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state= 42)
-    # train, test = train_test_split(df, test_size=0.2, random_state=42)
-    # # saving the train data
-    print(X_train)
-    # X_train.to_csv("data/train_data.csv", index=False)
-    # X_test.to_csv("data/test_data.csv", index=False)
-    # y_train.to_csv("data/train_data_labels.csv", index=False, header=True)
-    # y_test.to_csv("data/test_data_labels.csv", index=False, header=True)
+    train, test = train_test_split(data_frame, test_size=0.2, random_state=42)
+    # # saving the train and test data
+    train.to_csv("data/train_data.csv", index=False, header=True)
+    test.to_csv("data/test_data.csv", index=False, header=True)
 
-    return X_train, X_test, y_train, y_test
-
-split_data()
+    return train, test
