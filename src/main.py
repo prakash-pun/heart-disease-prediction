@@ -1,11 +1,13 @@
-import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
-from sklearn.preprocessing import OneHotEncoder
-from utils import get_csv_file
+from utils import get_data
 from scale import scale_minmax
 
+# correlation 
+# explore
+# split
+# fill and merge
+# scale
+# univariant bivariant
 
-scaled_data = scale_minmax()
+data_frame = get_data("merged_train_data.csv")
 
-print(scaled_data.head()) 
+scaled_data = scale_minmax(data_frame)
