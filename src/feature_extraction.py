@@ -3,10 +3,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
 import seaborn as sns
-import vizualize as viz
+
 
 # Data Import
-df2=pd.read_csv("/content/scaled_standard_dataset.csv",index_col=0,na_values="??")
+
+
+df2=pd.read_csv("D:/cardiovascular-disease-prediction/data/scaled_standard_dataset.csv",index_col=0,na_values="??")
 df=df2.copy(deep=True)
 
 df.head()
