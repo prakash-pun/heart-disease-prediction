@@ -187,4 +187,4 @@ def scaled_matrix():
 
     correlation_matrix = numeric_columns.corr()
     
-    correlation_matrix
+    return correlation_matrix
