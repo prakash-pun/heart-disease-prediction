@@ -49,8 +49,8 @@ git pull # to pull new changes from github
 > python3 -m venv venv # for mac
 > venv/Scripts/activate # to activate virtualenv windows
 > source venv/bin/activate # to active virutalenv mac
-> pip freeze > requirements.txt
 > pip install -r requirements.txt # to install all the packages
+> pip freeze > requirements.txt # to update requirements.txt
 ```
 
 ## Collaborators

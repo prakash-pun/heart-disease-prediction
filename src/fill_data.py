@@ -50,6 +50,3 @@ def fill_data(data_frame, file_name="merged_test_data.csv"):
     df.to_csv(f"data/{file_name}")
 
     return df
-
-
-fill_data(data)

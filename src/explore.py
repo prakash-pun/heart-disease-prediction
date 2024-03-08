@@ -155,35 +155,31 @@ def explore_hist():
     df.hist(column='diabetic_3', grid=False, edgecolor='black', color='red')
 
 
-def multicollinarity():
-    df = pd.read_csv('scaled_dataset.csv')
-
-    heat_map(df, "pearson")
-    heat_map(df, "spearman")
-    heat_map(df, "kendall")
+def multicollinarity(data_frame):
+    heat_map(data_frame, "pearson")
+    heat_map(data_frame, "spearman")
+    heat_map(data_frame, "kendall")
 
 
-def scaled_matrix():
-    df = pd.read_csv("../data/scaled_standard_dataset.csv")
-
-    correl =df.corr(method='pearson').round(2)
+def scaled_matrix(data_frame):
+    correl =data_frame.corr(method='pearson').round(2)
     plt.figure(figsize=(15,15))
     sns.heatmap(correl,annot=True)
     plt.show()
 
-    correl =df.corr(method='spearman').round(2)
+    correl =data_frame.corr(method='spearman').round(2)
     plt.figure(figsize=(15,15))
     sns.heatmap(correl,annot=True)
     plt.show()
 
-    correl =df.corr(method='kendall').round(2)
+    correl =data_frame.corr(method='kendall').round(2)
     plt.figure(figsize=(15,15))
     sns.heatmap(correl,annot=True)
     plt.show()
 
 
     # Selecting only the numeric columns for correlation calculation
-    numeric_columns = df.select_dtypes(include=['int64', 'float64'])
+    numeric_columns = data_frame.select_dtypes(include=['int64', 'float64'])
 
     correlation_matrix = numeric_columns.corr()
     
