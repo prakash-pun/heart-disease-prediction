@@ -3,7 +3,7 @@ from feature_extraction import extract_feature
 from split_dataset import split_data
 from fill_data import fill_data
 from scale import scale_minmax
-from models.train_model import svm_model
+from models.train_model import svm_model, LogisticRegression_model1
 
 X_train, X_test, y_train, y_test = split_data()
 
@@ -22,7 +22,14 @@ start = time.time()
 accuracy = svm_model(X_train, X_test, y_train, y_test)
 
 end = time.time()
+# logistic regression
+start2 = time.time()
+accuracy_logreg = LogisticRegression_model1(X_train, X_test, y_train, y_test)
+end2 = time.time()
 
 
 print(accuracy)
 print(end-start)
+
+print(accuracy_logreg)
+print(end2-start2)
