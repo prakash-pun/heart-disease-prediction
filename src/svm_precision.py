@@ -12,11 +12,12 @@ from sklearn.metrics import precision_score
 
 def svm_model2(X_train, X_test, y_train, y_test):
     clf = svm.SVC(kernel='linear', C=1.0)
-    # Training
+    # Train the classifier
     clf.fit(X_train, y_train)
 
+    # Make predictions
     predictions = clf.predict(X_test)
 
-    #Calculating precision
+    # Evaluate Precision
     precision = precision_score(y_test, predictions)
     return precision
