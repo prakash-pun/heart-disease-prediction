@@ -5,6 +5,7 @@ from fill_data import fill_data
 from scale import scale_minmax
 from models.train_model import svm_model
 
+
 X_train, X_test, y_train, y_test = split_data()
 
 # fill and merge train dataset
@@ -18,11 +19,11 @@ X_train = extract_feature(data_frame=scaled_train_data, y_train=y_train)
 X_test = extract_feature(data_frame=scaled_test_data, y_train=y_test)
 
 start = time.time()
-
 accuracy = svm_model(X_train, X_test, y_train, y_test)
-
 end = time.time()
-
-
 print(accuracy)
 print(end-start)
+
+start = time.time()
+accuracy = svm_model(X_train, X_test, y_train, y_test)
+end = time.time()
