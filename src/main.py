@@ -29,7 +29,3 @@ precision = random_forest_model(X_train, X_test, y_train, y_test)
 end = time.time()
 print(precision)
 print(end-start)
-
-start = time.time()
-accuracy = svm_model(X_train, X_test, y_train, y_test)
-end = time.time()
