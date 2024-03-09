@@ -5,7 +5,7 @@ from fill_data import fill_data
 from scale import scale_minmax
 from models.train_model import svm_model
 from models.train_model_logreg import LogisticRegression_model1, LogisticRegression_model2
-from models.random_forest import random_forest_model,
+from models.random_forest import random_forest_model, ramdom_forest_recall
 
 X_train, X_test, y_train, y_test = split_data()
 
