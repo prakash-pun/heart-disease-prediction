@@ -43,7 +43,5 @@ def fill_data(data_frame, file_name="merged_test_data.csv"):
     oh_df.index = df.index
     df = pd.concat([df, oh_df], axis=1)
 
-    # % Export Data
-    df.to_csv(f"../data/{file_name}")
 
     return df

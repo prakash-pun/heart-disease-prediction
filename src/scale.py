@@ -16,8 +16,6 @@ def scale_minmax(data_frame):
     scaled_data_frame.index = data_frame.index
     # scaled_data_frame['cardio'] = y
     # scaled_data_frame.insert(loc=0, column='id', value=id)
-    scaled_data_frame.to_csv("../data/scaled_dataset.csv", index=False)
-
 
     return scaled_data_frame
 
