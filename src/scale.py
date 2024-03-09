@@ -3,20 +3,21 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
 def scale_minmax(data_frame):    
-    X = data_frame.drop(columns=["id", "cardio"])
+    # X = data_frame.drop(columns=["id"])
 
-    y = data_frame["cardio"]
-    id = data_frame["id"]
+    # y = data_frame["cardio"]
+    # id = data_frame["id"]
 
     # with MinMaxScaler
+    # oh_df.index = df.index
     min_max_scaler = MinMaxScaler()
-    scaled_data = min_max_scaler.fit_transform(X)
-    scaled_data_frame = pd.DataFrame(scaled_data, columns=X.columns)
-
-    scaled_data_frame['cardio'] = y
-    scaled_data_frame.insert(loc=0, column='id', value=id)
-
+    scaled_data = min_max_scaler.fit_transform(data_frame)
+    scaled_data_frame = pd.DataFrame(scaled_data, columns=data_frame.columns)
+    scaled_data_frame.index = data_frame.index
+    # scaled_data_frame['cardio'] = y
+    # scaled_data_frame.insert(loc=0, column='id', value=id)
     scaled_data_frame.to_csv("data/scaled_dataset.csv", index=False)
+
 
     return scaled_data_frame
 

@@ -1,22 +1,28 @@
+import time
+from feature_extraction import extract_feature
 from split_dataset import split_data
 from fill_data import fill_data
 from scale import scale_minmax
-from explore import scaled_matrix, multicollinarity
-from utils import get_data
+from models.train_model import svm_model
 
-# correlation
-# explore
-
-# split train and test data
-train, test = split_data()
+X_train, X_test, y_train, y_test = split_data()
 
 # fill and merge train dataset
-filled_test_df = fill_data(data_frame=train, file_name="merged_train_data.csv")
-
+filled_x_train = fill_data(data_frame=X_train, file_name="merged_train_data.csv")
+filled_x_test = fill_data(data_frame=X_test, file_name="merged_test_data.csv")
 # scale
-scaled_data = scale_minmax(filled_test_df)
+scaled_train_data = scale_minmax(filled_x_train)
+scaled_test_data = scale_minmax(filled_x_test)
 
-# univariant bivariant, multicollinarity
-corellation_matrix = scaled_matrix(scaled_data)
-print(corellation_matrix)
-multicollinarity(scaled_data)
+X_train = extract_feature(data_frame=scaled_train_data, y_train=y_train)
+X_test = extract_feature(data_frame=scaled_test_data, y_train=y_test)
+
+start = time.time()
+
+accuracy = svm_model(X_train, X_test, y_train, y_test)
+
+end = time.time()
+
+
+print(accuracy)
+print(end-start)
