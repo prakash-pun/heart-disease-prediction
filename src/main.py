@@ -5,7 +5,7 @@ from fill_data import fill_data
 from scale import scale_minmax
 from models.train_model import svm_model
 from models.train_model_logreg import LogisticRegression_model1, LogisticRegression_model2
-from models.random_forest import random_forest_model
+from models.random_forest import random_forest_model,
 
 X_train, X_test, y_train, y_test = split_data()
 
@@ -47,3 +47,9 @@ precision_log = LogisticRegression_model2(X_train, X_test, y_train, y_test)
 end2 = time.time()
 print(precision_log)
 print(end2-start2)
+
+start=time.time()
+recall=random_forest_recall(X_train, X_test, y_train, y_test)
+end=time.time()
+print(recall)
+print(end-start)
