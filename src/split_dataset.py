@@ -17,9 +17,9 @@ def split_data():
     X = data_frame.drop("cardio", axis=1)
     y = data_frame["cardio"]  # target
 
-    train, test = train_test_split(data_frame, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     # # saving the train and test data
-    train.to_csv("data/train_data.csv", index=False, header=True)
-    test.to_csv("data/test_data.csv", index=False, header=True)
+    # train.to_csv("data/train_data.csv", index=False, header=True)
+    # test.to_csv("data/test_data.csv", index=False, header=True)
 
-    return train, test
+    return X_train, X_test, y_train, y_test
