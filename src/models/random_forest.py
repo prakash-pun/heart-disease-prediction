@@ -29,4 +29,5 @@ def random_forest_recall(X_train, X_test, y_train, y_test):
 
     # Evaluate recall on the test data
     recall = recall_score(y_test, predictions)
+    return recall
 
