@@ -3,7 +3,7 @@ from feature_extraction import extract_feature
 from split_dataset import split_data
 from fill_data import fill_data
 from scale import scale_minmax
-from models.train_model import svm_model
+from models.random_forest import random_forest_model
 
 X_train, X_test, y_train, y_test = split_data()
 
@@ -19,10 +19,10 @@ X_test = extract_feature(data_frame=scaled_test_data, y_train=y_test)
 
 start = time.time()
 
-accuracy = svm_model(X_train, X_test, y_train, y_test)
+precision = random_forest_model(X_train, X_test, y_train, y_test)
 
 end = time.time()
 
 
-print(accuracy)
+print(precision)
 print(end-start)
