@@ -3,7 +3,8 @@ from feature_extraction import extract_feature
 from split_dataset import split_data
 from fill_data import fill_data
 from scale import scale_minmax
-from models.train_model import svm_model, LogisticRegression_model1
+from models.train_model import svm_model
+from models.train_model_logreg import LogisticRegression_model1
 
 X_train, X_test, y_train, y_test = split_data()
 
