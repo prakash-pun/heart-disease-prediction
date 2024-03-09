@@ -5,7 +5,7 @@ from fill_data import fill_data
 from scale import scale_minmax
 from models.train_model import svm_model
 from models.train_model_logreg import LogisticRegression_model1
-from models.random_forest import random_forest_model
+from models.random_forest import random_forest_model, random_forest_model2
 
 X_train, X_test, y_train, y_test = split_data()
 
@@ -24,20 +24,30 @@ X_test = extract_feature(data_frame=scaled_test_data, y_train=y_test)
 start = time.time()
 accuracy = svm_model(X_train, X_test, y_train, y_test)
 end = time.time()
-print(accuracy)
+print("Accuracy_SVM:", accuracy)
 print(end-start)
 
 # logistic regression
 start2 = time.time()
 accuracy_logreg = LogisticRegression_model1(X_train, X_test, y_train, y_test)
 end2 = time.time()
-print(accuracy_logreg)
+print("Accuracy_LogReg:", accuracy_logreg)
 print(end2-start2)
 
 #random forest
 start = time.time()
 precision = random_forest_model(X_train, X_test, y_train, y_test)
 end = time.time()
-print(precision)
+print("Precision: ",precision)
 print(end-start)
+
+
+start = time.time()
+accuracy, f1_score = random_forest_model2(X_train, X_test, y_train, y_test)
+end = time.time()
+print("Accuracy_RF:", accuracy)
+print("F1_score_RF: ",f1_score)
+print(end-start)
+
+
 
