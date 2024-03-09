@@ -6,7 +6,15 @@ import seaborn as sns
 import vizualize as viz
 from utils import get_data
 
-# Data Import
+def extract_feature(data_frame, y_train):
+    df = data_frame.copy(deep=True)
+    raw_correl = df.corrwith(y_train, method='spearman').round(2)
+
+    threshold = 0.11
+    raw_cols = raw_correl[abs(raw_correl) > threshold].index.tolist()
+    raw_features = df[raw_cols]
+
+    return raw_features
 
 # scaled_standard_dataset.csv
 def feature_extract(data_frame):
@@ -42,7 +50,7 @@ def feature_extract(data_frame):
     return raw_features
 
 
-data = pd.read_csv("../data/scaled_without_bin.csv")
+
 
 
 def feature_extract_without_binary(data_frame):
@@ -67,9 +75,6 @@ def feature_extract_without_binary(data_frame):
         plt.figure(figsize=(8, 5))
         sns.histplot(ds2[col])
         plt.show()
-
-
-feature_extract_without_binary(data)
 
 
 def feature_extract_dataset():

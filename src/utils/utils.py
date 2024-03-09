@@ -19,6 +19,6 @@ def get_data(file = "cleaned_data.csv"):
     file: string
     """
     path = get_csv_file(file)
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, index_col=0)
 
     return df

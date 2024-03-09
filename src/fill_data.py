@@ -33,9 +33,6 @@ def fill_data(data_frame, file_name="merged_test_data.csv"):
     # Round BMI to the nearest whole number
     df['bmi'] = df['bmi'].round()
 
-    df['cholesterol'].corr(df['cardio'])
-    df['gluc'].corr(df['cardio'])
-
     # % Encoding needs tuning
     encoder = OneHotEncoder()
 
