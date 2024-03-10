@@ -5,12 +5,19 @@ from fill_data import fill_data
 from scale import scale_minmax
 from models.train_model import svm_model
 <<<<<<< HEAD
+<<<<<<< HEAD
 from models.train_model_logreg import LogisticRegression_model1
 from models.random_forest import random_forest_model, random_forest_model2
 =======
 from models.train_model_logreg import LogisticRegression_model1, LogisticRegression_model2
 from models.random_forest import random_forest_model
 >>>>>>> 1a4eda0d350368b384c52ba9e8ba697724e106a4
+=======
+
+from models.random_forest import random_forest_model, random_forest_model2
+from models.train_model_logreg import LogisticRegression_model1, LogisticRegression_model2
+
+>>>>>>> 1fed9e597f3a90dddb41898c994ef01fc334325e
 
 X_train, X_test, y_train, y_test = split_data()
 
@@ -39,7 +46,13 @@ end2 = time.time()
 print("Accuracy_LogReg:", accuracy_logreg)
 print(end2-start2)
 
-#random forest
+start2 = time.time()
+precision_log = LogisticRegression_model2(X_train, X_test, y_train, y_test)
+end2 = time.time()
+print("Precision_LogREg:", precision_log)
+print(end2-start2)
+
+# random forest
 start = time.time()
 precision = random_forest_model(X_train, X_test, y_train, y_test)
 end = time.time()
@@ -47,7 +60,10 @@ print("Precision: ",precision)
 print(end-start)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1fed9e597f3a90dddb41898c994ef01fc334325e
 start = time.time()
 accuracy, f1_score = random_forest_model2(X_train, X_test, y_train, y_test)
 end = time.time()
@@ -57,6 +73,7 @@ print(end-start)
 
 
 
+<<<<<<< HEAD
 =======
 # Precision
 start2 = time.time()
@@ -65,3 +82,5 @@ end2 = time.time()
 print(precision_log)
 print(end2-start2)
 >>>>>>> 1a4eda0d350368b384c52ba9e8ba697724e106a4
+=======
+>>>>>>> 1fed9e597f3a90dddb41898c994ef01fc334325e
