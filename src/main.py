@@ -4,8 +4,13 @@ from split_dataset import split_data
 from fill_data import fill_data
 from scale import scale_minmax
 from models.train_model import svm_model
+<<<<<<< HEAD
 from models.train_model_logreg import LogisticRegression_model1
 from models.random_forest import random_forest_model, random_forest_model2
+=======
+from models.train_model_logreg import LogisticRegression_model1, LogisticRegression_model2
+from models.random_forest import random_forest_model
+>>>>>>> 1a4eda0d350368b384c52ba9e8ba697724e106a4
 
 X_train, X_test, y_train, y_test = split_data()
 
@@ -41,6 +46,7 @@ end = time.time()
 print("Precision: ",precision)
 print(end-start)
 
+<<<<<<< HEAD
 
 start = time.time()
 accuracy, f1_score = random_forest_model2(X_train, X_test, y_train, y_test)
@@ -51,3 +57,11 @@ print(end-start)
 
 
 
+=======
+# Precision
+start2 = time.time()
+precision_log = LogisticRegression_model2(X_train, X_test, y_train, y_test)
+end2 = time.time()
+print(precision_log)
+print(end2-start2)
+>>>>>>> 1a4eda0d350368b384c52ba9e8ba697724e106a4
