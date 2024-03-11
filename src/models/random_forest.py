@@ -26,8 +26,8 @@ def random_forest_model2(X_train, X_test, y_train, y_test):
     predictions = clf.predict(X_test)
 
     # Evaluate accuracy and f1 score
-    accuracy = accuracy_score(y_test, y_train)
-    f_score = f1_score(y_test, y_train, average="binary")
+    accuracy = accuracy_score(y_test, predictions)
+    f_score = f1_score(y_test, predictions, average="binary")
 
     return accuracy, f_score
 

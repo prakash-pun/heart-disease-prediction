@@ -1,12 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
-from utils import get_data
 
-# df2=pd.read_csv(get_csv_file("train_data.csv"),index_col=0,na_values="??")
-data = get_data("test_data.csv")
-
-
-def fill_data(data_frame, file_name="merged_test_data.csv"):
+def fill_data(data_frame):
     """Fill the missing value
 
     Parameters
@@ -30,7 +25,6 @@ def fill_data(data_frame, file_name="merged_test_data.csv"):
 
     # Calculate BMI
     df['bmi'] = df['weight'] / (df['height_m'] ** 2)
-    # Round BMI to the nearest whole number
     df['bmi'] = df['bmi'].round()
 
     # % Encoding needs tuning
@@ -42,6 +36,5 @@ def fill_data(data_frame, file_name="merged_test_data.csv"):
         ['cholesterol', 'gluc', 'diabetic']))
     oh_df.index = df.index
     df = pd.concat([df, oh_df], axis=1)
-
 
     return df
