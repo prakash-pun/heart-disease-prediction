@@ -36,7 +36,8 @@ def analyze_data(data_file):
     print("Value counts of bp_high:\n", df['bp_high'].value_counts())
 
     # Plot a histogram of the 'bp_high' column
-    df['bp_high'].plot(kind='hist', grid=False, edgecolor='black', color='darkblue')
+    df['bp_high'].plot(kind='hist', grid=False,
+                       edgecolor='black', color='darkblue')
     plt.title('Blood Pressure (High)')
     plt.show()
 
