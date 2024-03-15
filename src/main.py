@@ -2,7 +2,13 @@ from feature_extraction import extract_feature
 from split_dataset import split_data
 from fill_data import fill_data
 from scale import scale_minmax
+<<<<<<< HEAD
 from models.train_model import TrainModel
+=======
+from models.train_model import svm_model
+from models.train_model_logreg import LogisticRegression_model1, LogisticRegression_model2
+from models.random_forest import random_forest_model, ramdom_forest_recall
+>>>>>>> ab77793c7fc3c0cf0f32bcbc7b0b3abc5efffbaa
 
 X_train, X_test, y_train, y_test = split_data()
 
@@ -39,6 +45,7 @@ recall=random_forest_recall(X_train, X_test, y_train, y_test)
 end=time.time()
 print(recall)
 print(end-start)
+<<<<<<< HEAD
 =======
 #Logistic Regression
 result_lr = model.logistic_regression_model()
@@ -54,3 +61,5 @@ print("Random Forest Model: ", results_rf)
 metrics = model.xg_boost()
 print("XGBoost_CLF ", metrics)
 >>>>>>> 124fb6f4b39a00f24531e30f4770559b65bac919
+=======
+>>>>>>> ab77793c7fc3c0cf0f32bcbc7b0b3abc5efffbaa
