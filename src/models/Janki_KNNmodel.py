@@ -1,4 +1,5 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from sklearn.neighbors import KNeighborsClassifier
 
 def KNN_model(y_true, y_pred):
     # Accuracy
@@ -18,17 +19,22 @@ def KNN_model(y_true, y_pred):
     
     return accuracy, precision, recall, f1, cm
 
-# Example usage:
-# Assuming y_true and y_pred are your true and predicted labels respectively
-y_true = [0, 1, 0, 1, 1, 0]
-y_pred = [0, 1, 0, 1, 0, 1]
 
-accuracy, precision, recall, f1, cm = evaluate_classification(y_true, y_pred)
+
+# Train KNN model
+knn_model = KNeighborsClassifier(n_neighbors=3)
+knn_model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = knn_model.predict(X_test)
+
+# Evaluate predictions
+accuracy, precision, recall, f1, cm = kNN_model(y_true, y_pred)
 
 print("Accuracy:", accuracy)
 print("Precision:", precision)
 print("Recall:", recall)
 print("F1 Score:", f1)
-print("Confusion Matrix:\n", cm)
+print("Confusion Matrix:\n", cm)  
 
-return accuracy_score,precision_score,recall_score,f1_score,confusion_matrix
+return accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
