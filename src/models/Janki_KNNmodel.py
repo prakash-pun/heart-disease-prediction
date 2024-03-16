@@ -16,9 +16,6 @@ def KNN_model(y_true, y_pred):
     
     # Confusion Matrix
     cm = confusion_matrix(y_true, y_pred)
-    
-    return accuracy, precision, recall, f1, cm
-
 
 
 # Train KNN model
@@ -37,4 +34,10 @@ print("Recall:", recall)
 print("F1 Score:", f1)
 print("Confusion Matrix:\n", cm)  
 
-return accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+return accuracy_score, precision_score, recall_score, f1_score, confusion_matrix    
+    
+    
+
+
+
+
