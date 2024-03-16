@@ -88,9 +88,8 @@ class TrainModel():
         # Train the model
         gradient_boosting.fit(self.X_train, self.y_train)
 
-        y_pred = gradient_boosting.predict(self.X_test)
+        prediction = gradient_boosting.predict(self.X_test)
+        # Calculate metrics
+        result = metrics(self.y_test, prediction)
 
-        # Evaluate accuracy
-        accuracy = accuracy_score(self.y_test, y_pred)
-
-        return accuracy
+        return result
