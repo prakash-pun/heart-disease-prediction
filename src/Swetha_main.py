@@ -6,6 +6,7 @@ from split_dataset import split_data
 from fill_data import fill_data
 from scale import scale_minmax
 from models.Swetha_KNNmodel import Swetha_KNNmodel
+from models.Swetha_KNNmodel import Swetha_DecisionTreeModel
 
 def main():
     # Split the dataset into train and test datasets
@@ -27,8 +28,14 @@ def main():
     model = Swetha_KNNmodel(X_train, X_test, y_train, y_test)
 
     # KNN model
-    KNN_results = model
-    print("KNN Model: ", KNN_results)
+    knn_results = model
+    print("KNN Model: ", knn_results)
+
+    model = Swetha_DecisionTreeModel(X_train, X_test, y_train, y_test)
+
+    # Decision Tree Model
+    Dec_Tree_results = model
+    print("Decision Tree Model: ", Dec_Tree_results)
 
     return model
 
