@@ -26,7 +26,7 @@ knn_model.fit(X_train, y_train)
 y_pred = knn_model.predict(X_test)
 
 # Evaluate predictions
-accuracy, precision, recall, f1, cm = kNN_model(y_true, y_pred)
+accuracy, precision, recall, f1, cm = KNN_model(y_true, y_pred)
 
 print("Accuracy:", accuracy)
 print("Precision:", precision)
