@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
+
 def fill_data(data_frame):
     """Fill the missing value
 
@@ -20,7 +21,8 @@ def fill_data(data_frame):
     # Basic Stats
     m_bp_lo = df.loc[:, 'bp_lo'].mean()
     m_round = round(m_bp_lo, -1)
-    df['bp_lo'].fillna(value=m_round, inplace=True)
+    # df['bp_lo'].fillna(value=m_round, inplace=True)
+    df.fillna({"bp_lo": m_round}, inplace=True)
     df['height_m'] = df['height'] / 100
 
     # Calculate BMI
