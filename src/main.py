@@ -22,18 +22,21 @@ X_test = extract_feature(data_frame=scaled_test_data, y_train=y_test)
 # Train Models
 model = TrainModel(X_train, X_test, y_train, y_test)
 
-# # SVM
-# svm_results = model.svm_model()
-# print("SVM Model:", svm_results)
+# SVM
+svm_results = model.svm_model()
+print("SVM Model:", svm_results)
 
-# # Logistic Regression
-# result_lr = model.logistic_regression_model()
-# print("Logistic Regression:", result_lr)
+# Logistic Regression
+result_lr = model.logistic_regression_model()
+print("Logistic Regression:", result_lr)
 
+# KNN Classifier
+knn = model.knn_model()
+print("KNN C", knn)
 
-# # Random Forest
-# results_rf = model.random_forest_model()
-# print("Random Forest Model: ", results_rf)
+# Random Forest
+results_rf = model.random_forest_model()
+print("Random Forest Model: ", results_rf)
 
 
 # XGBoost
@@ -41,20 +44,21 @@ xg_boost = model.xg_boost()
 print("XGBoost_CLF ", xg_boost)
 
 
-# # Gradient Bosting Machine
-# gbm = model.gbm_model()
-# print("Gradient Boosting: ", gbm)
+# Gradient Bosting Machine
+gbm = model.gbm_model()
+print("Gradient Boosting: ", gbm)
 
 # LightGBM
 results_lgbm = model.light_gbm()
 print(" Light GBM: ", results_lgbm)
 
 metrics = {
-    # "SVM Model": list(svm_results),
-    # "Logistic Regression": list(result_lr),
-    # "Random Forest Model": list(results_rf),
+    "SVM Model": list(svm_results),
+    "Logistic Regression": list(result_lr),
+    "Random Forest Model": list(results_rf),
+    "KNN Classifier": list(knn),
     "XGBoost_CLF": list(xg_boost),
-    # "Gradient Boosting": list(gbm),
+    "Gradient Boosting": list(gbm),
     "Light GBM": list(results_lgbm)
 }
 
