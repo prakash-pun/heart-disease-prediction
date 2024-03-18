@@ -27,7 +27,7 @@ def get_data(file="cleaned_data.csv"):
 
 def generate_table(metrics):
     df = pd.DataFrame(
-        data=metrics, index=["Accuracy", "Precision", "Recall", "F1 Score"])
+        data=metrics, index=["Accuracy", "Precision", "Recall", "F1 Score", "ROC Auc"])
     df = df.T
     pd.set_option('display.float_format', '{:.15f}'.format)
 
