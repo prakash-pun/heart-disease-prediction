@@ -30,5 +30,4 @@ def generate_table(metrics):
         data=metrics, index=["Accuracy", "Precision", "Recall", "F1 Score", "ROC Auc"])
     df = df.T
     pd.set_option('display.float_format', '{:.15f}'.format)
-
     print(df)

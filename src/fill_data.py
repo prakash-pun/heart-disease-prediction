@@ -19,7 +19,7 @@ def fill_data(data_frame):
 
     df = data_frame.copy(deep=True)
     # Basic Stats
-    m_bp_lo = df.loc[:, 'bp_lo'].mean()
+    m_bp_lo = df.loc[:, 'bp_lo'].median()
     m_round = round(m_bp_lo, -1)
     # df['bp_lo'].fillna(value=m_round, inplace=True)
     df.fillna({"bp_lo": m_round}, inplace=True)
