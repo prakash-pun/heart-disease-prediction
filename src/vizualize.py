@@ -34,7 +34,7 @@ def heatmap(data):
     plt.show()
 
 
-def heat_map(data, method="pearson"):
+def heat_map(data, data2, method="pearson"):
     """
     Plot a heat map
     Parameters
@@ -43,7 +43,7 @@ def heat_map(data, method="pearson"):
     method : string, optional, default pearson
         spearman, kendall, pearson
     """
-    correlation = data.corr(method=method).round(2)
+    correlation = data.corrwith(data2, method=method).round(2)
     plt.figure(figsize=(15, 15))
     sns.heatmap(correlation, annot=True)
     plt.show() 
