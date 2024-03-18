@@ -41,6 +41,6 @@ metrics = {
     "Gradient Boosting": list(gbm),
 }
 
-generate_table(metrics)
+# generate_table(metrics)
 
 
