@@ -1,7 +1,7 @@
 from feature_extraction import extract_feature
 from split_dataset import split_data
 from fill_data import fill_data
-from scale import scale_standard
+from scale import scale_minmax
 from models.train_model import TrainModel
 from utils import generate_table
 
@@ -12,8 +12,8 @@ filled_x_train = fill_data(data_frame=X_train)
 filled_x_test = fill_data(data_frame=X_test)
 
 # Data Scaling
-scaled_train_data = scale_standard(filled_x_train)
-scaled_test_data = scale_standard(filled_x_test)
+scaled_train_data = scale_minmax(filled_x_train)
+scaled_test_data = scale_minmax(filled_x_test)
 
 # Features
 X_train = extract_feature(data_frame=scaled_train_data, y_train=y_train)
