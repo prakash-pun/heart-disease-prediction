@@ -1,3 +1,4 @@
+from sklearn.model_selection import GridSearchCV
 from sklearn import svm
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
@@ -5,6 +6,7 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
 import xgboost as xgb
 import matplotlib.pyplot as plt
+import numpy as np
 # import lightgbm as lgbm
 
 
@@ -40,7 +42,7 @@ class TrainModel():
 
     def logistic_regression_model(self):
         # Train the classifier
-        logreg = LogisticRegression(random_state=0)
+        logreg = LogisticRegression(random_state=0,max_iter=1000)
         logreg.fit(self.X_train, self.y_train)
 
         # make prediction
@@ -58,17 +60,22 @@ class TrainModel():
     def xg_boost(self):
         # Define parameters for XGBoost
         params = {
-            'booster': 'gbtree',  # gblinear
-            'learning_rate': 0.15,
-            'n_estimators': 200,
-            'subsample': 0.8,
-            'max_depth': 2,  # Tree Depth
-            'objective': 'binary:logistic',  # Binary classification
-            'eval_metric': 'merror'  # Evaluation metric
+            'booster': ['gbtree','gblinear'],  # gblinear
+            'learning_rate': np.arange(0.01, 0.9, 0.01),
+            'n_estimators': range(50,1000,50),
+            'subsample': np.arange(0.1,0.9,0.1),
+            'max_depth': range(2,7),  # Tree Depth
+            'objective': ['binary:logistic'],#,'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
+            'eval_metric': ['merror','logloss','auc']  # Evaluation metric
         }
-
+        model = xgb.XGBClassifier()
+        grid_search = GridSearchCV(model, params, cv=5, scoring="recall")
+        grid_search.fit(self.X_train,self.y_train)
+        
+        best_param=grid_search.best_params_
+        
         # XGB CLF
-        xgb_clf = xgb.XGBClassifier(**params)
+        xgb_clf = xgb.XGBClassifier(**best_param)
         xgb_clf.fit(self.X_train, self.y_train)
 
         # Make predictions
