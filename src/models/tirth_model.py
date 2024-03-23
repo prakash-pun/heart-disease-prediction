@@ -98,7 +98,7 @@ class TrainModel():
     def gbm_model(self):
         # Initialize the Gradient Boosting Classifier
         gradient_boosting = GradientBoostingClassifier(
-            n_estimators=200, learning_rate=0.2, max_depth=2)
+            n_estimators=200, learning_rate=0.2, max_depth=2.5)
 
         # Train the model
         gradient_boosting.fit(self.X_train, self.y_train)
