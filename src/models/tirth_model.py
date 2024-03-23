@@ -42,7 +42,7 @@ class TrainModel():
 
     def logistic_regression_model(self):
         # Train the classifier
-        logreg = LogisticRegression(random_state=0,max_iter=2000)
+        logreg = LogisticRegression(random_state=0,max_iter=1500)
         logreg.fit(self.X_train, self.y_train)
 
         # make prediction
