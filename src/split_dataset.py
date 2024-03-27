@@ -13,9 +13,9 @@ def split_data():
     test 
         dataset for test data
     """
-    org_data_frame = get_data("cleaned_data.csv")
+    data_frame = get_data("cleaned_data.csv")
     
-    data_frame = pd.concat([org_data_frame,org_data_frame], ignore_index=False)
+    # data_frame = pd.concat([org_data_frame,org_data_frame], ignore_index=False)
     X = data_frame.drop("cardio", axis=1)
     y = data_frame["cardio"] 
     
