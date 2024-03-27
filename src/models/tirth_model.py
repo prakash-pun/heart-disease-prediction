@@ -1,10 +1,13 @@
 from sklearn.model_selection import GridSearchCV
+from sklearn import svm
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
 import xgboost as xgb
 import matplotlib.pyplot as plt
 import numpy as np
+# import lightgbm as lgbm
 
 
 def plot_roc(fpr, tpr):
@@ -39,7 +42,7 @@ class TrainModel():
 
     def logistic_regression_model(self):
         # Train the classifier
-        logreg = LogisticRegression(random_state=42,max_iter=1000)
+        logreg = LogisticRegression(random_state=0,max_iter=1500)
         logreg.fit(self.X_train, self.y_train)
 
         # make prediction
@@ -57,7 +60,7 @@ class TrainModel():
     def xg_boost(self):
         # Define parameters for XGBoost
         params = {
-             'booster': ['gbtree','gblinear'],  # gblinear
+            'booster': ['gbtree','gblinear'],  # gblinear
             'learning_rate': np.arange(0.01, 0.9, 0.01),
             'n_estimators': range(50,1000,50),
             'subsample': np.arange(0.1,0.9,0.1),
@@ -95,7 +98,7 @@ class TrainModel():
     def gbm_model(self):
         # Initialize the Gradient Boosting Classifier
         gradient_boosting = GradientBoostingClassifier(
-            n_estimators=150, learning_rate=0.14, max_depth=2)
+            n_estimators=200, learning_rate=0.2, max_depth=2.5)
 
         # Train the model
         gradient_boosting.fit(self.X_train, self.y_train)
@@ -112,4 +115,3 @@ class TrainModel():
         result_train = metrics(self.y_train, train_predict, train_proba[:, 1])
 
         return result_train, result
-    
