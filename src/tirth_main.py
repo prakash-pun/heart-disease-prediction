@@ -30,7 +30,7 @@ print("Logistic Regression:", result_lr)
 xg_boost = model.xg_boost()
 print("XGBoost_CLF ", xg_boost)
 
-# Gradient Bosting Machine
+# Gradient Boosting Machine
 gbm = model.gbm_model()
 print("Gradient Boosting: ", gbm)
 

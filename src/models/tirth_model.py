@@ -65,7 +65,7 @@ class TrainModel():
             'n_estimators': range(50,1000,50),
             'subsample': np.arange(0.1,0.9,0.1),
             'max_depth': range(2,7),  # Tree Depth
-            'objective': ['binary:logistic'],#,'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
+            'objective': ['binary:logistic'],  # 'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
             'eval_metric': ['merror','logloss','auc']  # Evaluation metric
         }
         model = xgb.XGBClassifier()
