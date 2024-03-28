@@ -1,4 +1,4 @@
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn import svm
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
@@ -63,16 +63,17 @@ class TrainModel():
             'booster': ['gbtree','gblinear'],  # gblinear
             'learning_rate': np.arange(0.01, 0.9, 0.01),
             'n_estimators': range(50,1000,50),
-            'subsample': np.arange(0.1,0.9,0.1),
-            'max_depth': range(2,7),  # Tree Depth
             'objective': ['binary:logistic'],#,'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
-            'eval_metric': ['merror','logloss','auc']  # Evaluation metric
+            'eval_metric': ['merror','logloss','auc'],  # Evaluation metric
+            # 'subsample': np.arange(0.1, 0.9, 0.1),
+            # 'max_depth': range(2, 7)
         }
         model = xgb.XGBClassifier()
-        grid_search = GridSearchCV(model, params, cv=5, scoring="recall")
-        grid_search.fit(self.X_train,self.y_train)
+        random_search = RandomizedSearchCV(estimator=model, param_distributions=params,
+                                           n_iter=100, scoring="recall", cv=5, random_state=42, n_jobs=-1)
+        random_search.fit(self.X_train,self.y_train)
         
-        best_param=grid_search.best_params_
+        best_param=random_search.best_params_
         
         # XGB CLF
         xgb_clf = xgb.XGBClassifier(**best_param)
@@ -88,11 +89,9 @@ class TrainModel():
         predict_proba = xgb_clf.predict_proba(self.X_test)
 
         # Calculate metrics
-        result = metrics(self.y_test, binary_predictions_clf,
-                         predict_proba[:, 1])
-        result_train = metrics(
-            self.y_train, train_predictions_clf, train_proba[:, 1])
-
+        result_train = metrics(self.y_train, train_predictions_clf, train_proba[:, 1])
+        result = metrics(self.y_test, binary_predictions_clf,predict_proba[:, 1])
+        
         return result_train, result
 
     def gbm_model(self):
