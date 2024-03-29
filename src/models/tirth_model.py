@@ -60,11 +60,19 @@ class TrainModel:
         params = {
             'booster': ['gbtree', 'gblinear'],  # gblinear
             'learning_rate': np.arange(0.01, 0.9, 0.01),
+<<<<<<< HEAD
             'n_estimators': range(50, 1000, 50),
             'subsample': np.arange(0.1, 0.9, 0.1),
             'max_depth': range(2, 7),  # Tree Depth
             'objective': ['binary:logistic'],  # 'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
             'eval_metric': ['merror', 'logloss', 'auc']  # Evaluation metric
+=======
+            'n_estimators': range(50,1000,50),
+            'subsample': np.arange(0.1,0.9,0.1),
+            'max_depth': range(2,7),  # Tree Depth
+            'objective': ['binary:logistic'],  # 'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
+            'eval_metric': ['merror','logloss','auc']  # Evaluation metric
+>>>>>>> origin/tirth_patel
         }
         model = xgb.XGBClassifier()
         grid_search = GridSearchCV(model, params, cv=5, scoring="recall")
