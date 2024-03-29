@@ -9,7 +9,7 @@ from model_tuners import train_lime_explainer, explain_prediction
 
 X_train, X_test, y_train, y_test = split_data()
 
-#Data Increment
+# Data Increment
 X_train = pd.concat([X_train, X_train], ignore_index=False)
 y_train = pd.concat([y_train, y_train], ignore_index=False)
 
@@ -30,38 +30,37 @@ model = TrainModel(X_train, X_test, y_train, y_test)
 
 # Logistic Regression
 result_lr = model.logistic_regression_model()
-print("Logistic Regression:", result_lr)
+# print("Logistic Regression:", result_lr)
 
 # XGBoost
 xg_boost = model.xg_boost()
-print("XGBoost_CLF ", xg_boost)
+print("XGBoost_CLF ", xg_boost[0])
 
-#Performing lime on Xgboost
-feature_names=X_train.columns.tolist()
-sample_index = 0
+# Performing lime on Xgboost
+feature_names = X_train.columns.tolist()
+sample_index = 1
 # Train a LIME explainer
 explainer = train_lime_explainer(X_train, feature_names)
 
 # Explain a prediction
-sample = X_test[sample_index]
-explanation = explain_prediction(explainer, sample, model.xgboost, len(feature_names))
+# sample = X_test[sample_index]
+# explanation = explainer.explain_instance(
+#     sample, xg_boost[2], len(feature_names), top_labels=1)
+# # Display the explanation
+# explanation.show_in_notebook()
 
-# Display the explanation
-explanation.show_in_notebook()
 
+# # Gradient Bosting Machine
+# gbm = model.gbm_model()
+# print("Gradient Boosting: ", gbm)
 
+# metrics = {
+#     "Logistic Regression Train": list(result_lr[0]),
+#     "Logistic Regression Test": list(result_lr[1]),
+#     "XGBoost_CLF Train": list(xg_boost[0]),
+#     "XGBoost_CLF Test": list(xg_boost[1]),
+#     "Gradient Boosting Train": list(gbm[0]),
+#     "Gradient Boosting Test": list(gbm[1]),
+# }
 
-#Gradient Bosting Machine
-gbm = model.gbm_model()
-print("Gradient Boosting: ", gbm)
-
-metrics = {
-    "Logistic Regression Train": list(result_lr[0]),
-    "Logistic Regression Test": list(result_lr[1]),
-    "XGBoost_CLF Train": list(xg_boost[0]),
-    "XGBoost_CLF Test": list(xg_boost[1]),
-    "Gradient Boosting Train": list(gbm[0]),
-    "Gradient Boosting Test": list(gbm[1]),
-}
-
-generate_table(metrics)
+# generate_table(metrics)
