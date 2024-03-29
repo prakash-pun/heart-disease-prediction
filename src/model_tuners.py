@@ -1,12 +1,11 @@
-from lime import lime_tabular
+import lime
+import lime.lime_tabular
 
 
 def train_lime_explainer(X_train, feature_names):
-    print(X_train.head())
-    print(feature_names)
-    explainer = lime_tabular.LimeTabularExplainer(training_data=X_train,
-                                                  feature_names=feature_names,
-                                                  class_names=['0', '1'])
+    explainer = lime.lime_tabular.LimeTabularExplainer(X_train.values,
+                                                       feature_names=feature_names,
+                                                       class_names=['0', '1'])
     return explainer
 
 

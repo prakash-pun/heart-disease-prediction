@@ -17,19 +17,19 @@ def barplot(levels, counts, col):
 
 
 def histplot(col):
-    plt.figure(figsize = (8,8))
-    sns.displot(col,bins = "auto")
+    plt.figure(figsize=(8, 8))
+    sns.displot(col, bins="auto")
     plt.show()
 
 
-def scatter(data_frame,col):
-    plt.figure(figsize=(8,8))
-    sns.scatterplot(data_frame,x=data_frame.col,y=data_frame.cardio)
+def scatter(data_frame, col):
+    plt.figure(figsize=(8, 8))
+    sns.scatterplot(data_frame, x=data_frame.col, y=data_frame.cardio)
     plt.show()
 
 
 def heatmap(data):
-    plt.figure(figsize=(15,15))
+    plt.figure(figsize=(15, 15))
     sns.heatmap(data, annot=True)
     plt.show()
 
@@ -46,5 +46,16 @@ def heat_map(data, data2, method="pearson"):
     correlation = data.corrwith(data2, method=method).round(2)
     plt.figure(figsize=(15, 15))
     sns.heatmap(correlation, annot=True)
-    plt.show() 
+    plt.show()
 
+
+def plot_roc(fpr, tpr):
+    # Plot ROC curve
+    plt.plot(fpr, tpr, color='blue', label='ROC Curve')
+    plt.plot([0, 1], [0, 1], color='red',
+             linestyle='--', label='Random Guessing')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC Curve')
+    plt.legend()
+    plt.show()

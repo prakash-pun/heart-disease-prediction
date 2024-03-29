@@ -1,25 +1,12 @@
-from sklearn.model_selection import RandomizedSearchCV
+import numpy as np
 from sklearn import svm
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
 import xgboost as xgb
-import matplotlib.pyplot as plt
-import numpy as np
 # import lightgbm as lgbm
-
-
-def plot_roc(fpr, tpr):
-    # Plot ROC curve
-    plt.plot(fpr, tpr, color='blue', label='ROC Curve')
-    plt.plot([0, 1], [0, 1], color='red',
-             linestyle='--', label='Random Guessing')
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('ROC Curve')
-    plt.legend()
-    plt.show()
 
 
 def metrics(y_test, predictions, proba):
@@ -55,7 +42,7 @@ class TrainModel():
         result_test = metrics(self.y_test, prediction, test_proba[:, 1])
         result_train = metrics(self.y_train, train_predict, train_proba[:, 1])
 
-        return result_train, result_test
+        return {"train": result_train, "test": result_test, "predict": logreg}
 
     def xg_boost(self):
         # Define parameters for XGBoost
@@ -95,7 +82,7 @@ class TrainModel():
         result = metrics(self.y_test, binary_predictions_clf,
                          predict_proba[:, 1])
 
-        return result_train, result, predict_proba
+        return {"train": result_train, "test": result, "predict": xgb_clf}
 
     def gbm_model(self):
         # Initialize the Gradient Boosting Classifier
@@ -116,10 +103,9 @@ class TrainModel():
         result = metrics(self.y_test, prediction, predict_proba[:, 1])
         result_train = metrics(self.y_train, train_predict, train_proba[:, 1])
 
-        return result_train, result
+        return {"train": result_train, "test": result}
 
-# Unused Models
-
+    # Unused Models
     def knn_model(self):
         # Train the classifier
         knn_classifier = KNeighborsClassifier(n_neighbors=10)
