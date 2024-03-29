@@ -2,7 +2,7 @@ from feature_extraction import extract_feature
 from split_dataset import split_data
 from fill_data import fill_data
 from scale import scale_minmax
-from rp_gbm_main import rp_gbm_model
+from rp_gbm_model import rp_gbm_model
 from utils import generate_table
 
 X_train, X_test, y_train, y_test = split_data()
@@ -19,8 +19,8 @@ scaled_test_data = scale_minmax(filled_x_test)
 X_train = extract_feature(data_frame=scaled_train_data, y_train=y_train)
 X_test = extract_feature(data_frame=scaled_test_data, y_train=y_test)
 
-Model_Evaluation = rp_gbm_model(X_train, X_test, y_train, y_test)
-print("Gradient Boosting:", Model_Evaluation)
+Model_Evaluation = (X_train, X_test, y_train, y_test)
+print("Gradient Boosting:", Morp_gbm_modeldel_Evaluation)
 
 metrics = {
 
