@@ -1,25 +1,12 @@
-from sklearn.model_selection import RandomizedSearchCV
+import numpy as np
 from sklearn import svm
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
 import xgboost as xgb
-import matplotlib.pyplot as plt
-import numpy as np
 # import lightgbm as lgbm
-
-
-def plot_roc(fpr, tpr):
-    # Plot ROC curve
-    plt.plot(fpr, tpr, color='blue', label='ROC Curve')
-    plt.plot([0, 1], [0, 1], color='red',
-             linestyle='--', label='Random Guessing')
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('ROC Curve')
-    plt.legend()
-    plt.show()
 
 
 def metrics(y_test, predictions, proba):
@@ -42,7 +29,7 @@ class TrainModel():
 
     def logistic_regression_model(self):
         # Train the classifier
-        logreg = LogisticRegression(random_state=0,max_iter=1000)
+        logreg = LogisticRegression(random_state=0, max_iter=1000)
         logreg.fit(self.X_train, self.y_train)
 
         # make prediction
@@ -55,26 +42,27 @@ class TrainModel():
         result_test = metrics(self.y_test, prediction, test_proba[:, 1])
         result_train = metrics(self.y_train, train_predict, train_proba[:, 1])
 
-        return result_train, result_test
+        return {"train": result_train, "test": result_test, "predict": logreg}
 
     def xg_boost(self):
         # Define parameters for XGBoost
         params = {
-            'booster': ['gbtree','gblinear'],  # gblinear
+            'booster': ['gbtree', 'gblinear'],  # gblinear
             'learning_rate': np.arange(0.01, 0.9, 0.01),
-            'n_estimators': range(50,1000,50),
-            'objective': ['binary:logistic'],#,'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
-            'eval_metric': ['merror','logloss','auc'],  # Evaluation metric
+            'n_estimators': range(50, 1000, 50),
+            # ,'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
+            'objective': ['binary:logistic'],
+            'eval_metric': ['merror', 'logloss', 'auc'],  # Evaluation metric
             # 'subsample': np.arange(0.1, 0.9, 0.1),
             # 'max_depth': range(2, 7)
         }
         model = xgb.XGBClassifier()
         random_search = RandomizedSearchCV(estimator=model, param_distributions=params,
                                            n_iter=100, scoring="recall", cv=5, random_state=42, n_jobs=-1)
-        random_search.fit(self.X_train,self.y_train)
-        
-        best_param=random_search.best_params_
-        
+        random_search.fit(self.X_train, self.y_train)
+
+        best_param = random_search.best_params_
+
         # XGB CLF
         xgb_clf = xgb.XGBClassifier(**best_param)
         xgb_clf.fit(self.X_train, self.y_train)
@@ -89,10 +77,12 @@ class TrainModel():
         predict_proba = xgb_clf.predict_proba(self.X_test)
 
         # Calculate metrics
-        result_train = metrics(self.y_train, train_predictions_clf, train_proba[:, 1])
-        result = metrics(self.y_test, binary_predictions_clf,predict_proba[:, 1])
-        
-        return result_train, result
+        result_train = metrics(
+            self.y_train, train_predictions_clf, train_proba[:, 1])
+        result = metrics(self.y_test, binary_predictions_clf,
+                         predict_proba[:, 1])
+
+        return {"train": result_train, "test": result, "predict": xgb_clf}
 
     def gbm_model(self):
         # Initialize the Gradient Boosting Classifier
@@ -113,10 +103,9 @@ class TrainModel():
         result = metrics(self.y_test, prediction, predict_proba[:, 1])
         result_train = metrics(self.y_train, train_predict, train_proba[:, 1])
 
-        return result_train, result
+        return {"train": result_train, "test": result}
 
-# Unused Models
-
+    # Unused Models
     def knn_model(self):
         # Train the classifier
         knn_classifier = KNeighborsClassifier(n_neighbors=10)
