@@ -3,7 +3,7 @@ from sklearn.metrics import accuracy_score, precision_score ,f1_score, recall_sc
 from sklearn import svm
 
 def rp_svm_model(X_train, X_test, y_train, y_test):
-    prp = svm.SVC(kernel='linear')
+    prp = svm.SVC(kernel='rbf')
     prp.fit(X_train,y_train)
     y_train_pred = prp.predict(X_train)
     y_test_pred = prp.predict(X_test)
