@@ -1,11 +1,18 @@
+import pandas as pd
+import lime
+import lime.lime_tabular
 from feature_extraction import extract_feature
+from models.train_model import TrainModel
 from split_dataset import split_data
+from utils import generate_table
 from fill_data import fill_data
 from scale import scale_minmax
-from models.bikky_model import TrainModel
-from utils import generate_table
 
 X_train, X_test, y_train, y_test = split_data()
+
+# Data Increment
+#X_train = pd.concat([X_train, X_train], ignore_index=False)
+#y_train = pd.concat([y_train, y_train], ignore_index=False)
 
 # Data Filling
 filled_x_train = fill_data(data_frame=X_train)
@@ -26,21 +33,29 @@ model = TrainModel(X_train, X_test, y_train, y_test)
 result_lr = model.logistic_regression_model()
 print("Logistic Regression:", result_lr)
 
-# XGBoost
-xg_boost = model.xg_boost()
-print("XGBoost_CLF ", xg_boost)
 
-# Gradient Bosting Machine
-gbm = model.gbm_model()
-print("Gradient Boosting: ", gbm)
+# Performing lime on Xgboost
+feature_names = X_train.columns.tolist()
+
+# Train a LIME explainer
+explainer = lime.lime_tabular.LimeTabularExplainer(X_train.values,
+                                                   feature_names=feature_names,
+                                                   class_names=['0', '1'])
+
+
+# Explain a prediction
+sample = X_test.values[1]
+for i in range(5):
+    explanation = explainer.explain_instance(
+    sample, result_lr["predict"].predict_proba, num_features=len(feature_names))
+# Display the explanation
+    print(i,explanation.as_list())
+
+
 
 metrics = {
-    "Logistic Regression Train": list(result_lr[0]),
-    "Logistic Regression Test": list(result_lr[1]),
-    "XGBoost_CLF Train": list(xg_boost[0]),
-    "XGBoost_CLF Test": list(xg_boost[1]),
-    "Gradient Boosting Train": list(gbm[0]),
-    "Gradient Boosting Test": list(gbm[1]),
+    "Logistic Regression Train": list(result_lr["train"]),
+    "Logistic Regression Test": list(result_lr["test"]),
 }
 
 generate_table(metrics)
