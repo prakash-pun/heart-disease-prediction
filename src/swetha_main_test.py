@@ -2,11 +2,11 @@ from feature_extraction import extract_feature
 from split_dataset import split_data
 from fill_data import fill_data
 from scale import scale_minmax
-from rp_gbm_model import rp_gbm_model
-
+from models.swetha_train import TrainModel
 from utils import generate_table
 import pandas as pd
 from model_tuners import train_lime_explainer, explain_prediction
+from feature_imp_analysis import plot_feature_importance, calculate_feature_importance
 
 X_train, X_test, y_train, y_test = split_data()
 
@@ -26,8 +26,6 @@ scaled_test_data = scale_minmax(filled_x_test)
 X_train = extract_feature(data_frame=scaled_train_data, y_train=y_train)
 X_test = extract_feature(data_frame=scaled_test_data, y_train=y_test)
 
-Model_Evaluation = (X_train, X_test, y_train, y_test)
-print("Gradient Boosting:", Morp_gbm_modeldel_Evaluation)
 # Train Models
 model = TrainModel(X_train, X_test, y_train, y_test)
 
@@ -35,43 +33,28 @@ model = TrainModel(X_train, X_test, y_train, y_test)
 result_lr = model.logistic_regression_model()
 print("Logistic Regression:", result_lr)
 
-# XGBoost
+#XGBoost
 xg_boost = model.xg_boost()
 print("XGBoost_CLF ", xg_boost)
 
-#Performing lime on Xgboost
-feature_names=X_train.columns.tolist()
-sample_index = 0
+# Performing lime on Xgboost
+# feature_names=X_train.columns.tolist()
+# sample_index = 0
 # Train a LIME explainer
-explainer = train_lime_explainer(X_train, feature_names)
-
-# Explain a prediction
-sample = X_test[sample_index]
-explanation = explain_prediction(explainer, sample, model.xgboost, len(feature_names))
-
+# explainer = train_lime_explainer(X_train, feature_names)
+#
+# # Explain a prediction
+# sample = X_test[sample_index]
+# explanation = explain_prediction(explainer, sample, model.xgboost, len(feature_names))
+#
 # Display the explanation
-explanation.show_in_notebook()
+# explanation.show_in_notebook()
 
 
 
 #Gradient Bosting Machine
 gbm = model.gbm_model()
 print("Gradient Boosting: ", gbm)
-
-#performing Lime on Gradient Boosting technique
-
-feature_names=X_train.columns.tolist()
-sample_index = 5
-
-# Training a LIME explainer for gbm Model
-rp_gbm_explainer = train_lime_explainer(X_train, feature_names)
-
-# Explain a prediction
-rp_gbm_sample = X_test[sample_index]
-rp_gbm_explanation = explain_prediction(rp_gbm_explainer, rp_gbm_sample, model.gbm_model, len(feature_names))
-
-explanation.show_in_notebook()
-
 
 metrics = {
     "Logistic Regression Train": list(result_lr[0]),
@@ -83,3 +66,15 @@ metrics = {
 }
 
 generate_table(metrics)
+
+feature_names = X_train.columns.tolist()
+
+# Plotting
+plot_feature_importance(model.logistic_regression_model(), feature_names, file_name='log_plot')
+feature_importance_lr = calculate_feature_importance(model.logistic_regression_model(), feature_names)
+
+plot_feature_importance(xg_boost, feature_names, file_name='xgb_plot')
+feature_importance_xgb = calculate_feature_importance(xg_boost, feature_names)
+
+plot_feature_importance(gbm, feature_names, file_name='gbm_plot')
+feature_importance_gbm = calculate_feature_importance(gbm, feature_names)
