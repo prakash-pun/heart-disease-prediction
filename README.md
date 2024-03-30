@@ -65,4 +65,8 @@ git pull # to pull new changes from github
 [@tirth-patel01](https://github.com/tirth-patel01)  
 [@whyteeth](https://github.com/whyteeth)
 
+```bash
+streamlit run streamlit-test.py
+```
+
 ### Happy Coding :smiley:
