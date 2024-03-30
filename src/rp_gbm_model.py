@@ -1,4 +1,19 @@
 from sklearn.ensemble import GradientBoostingClassifier
+#from .qhull import *
+#import qhull
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
+
+print("hii")
+def metrics(y_test, predictions, proba):
+    accuracy = accuracy_score(y_test, predictions)
+    precision = precision_score(y_test, predictions)
+    recall = recall_score(y_test, predictions)
+    f_score = f1_score(y_test, predictions)
+    roc_auc = roc_auc_score(y_test, proba)
+
+    return accuracy, precision, recall, f_score, roc_auc
+
+
 
 def rp_gbm_model(X_train, X_test, y_train, y_test):
     # Initialize the Gradient Boosting Classifier
