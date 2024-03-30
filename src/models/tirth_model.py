@@ -1,8 +1,6 @@
 from sklearn.model_selection import GridSearchCV
-from sklearn import svm
 from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
 import xgboost as xgb
 import matplotlib.pyplot as plt
@@ -32,7 +30,7 @@ def metrics(y_test, predictions, proba):
     return accuracy, precision, recall, f_score, roc_auc
 
 
-class TrainModel():
+class TrainModel:
 
     def __init__(self, X_train, X_test, y_train, y_test):
         self.X_train = X_train
@@ -42,7 +40,7 @@ class TrainModel():
 
     def logistic_regression_model(self):
         # Train the classifier
-        logreg = LogisticRegression(random_state=0,max_iter=1500)
+        logreg = LogisticRegression(random_state=0, max_iter=1500)
         logreg.fit(self.X_train, self.y_train)
 
         # make prediction
@@ -60,19 +58,27 @@ class TrainModel():
     def xg_boost(self):
         # Define parameters for XGBoost
         params = {
-            'booster': ['gbtree','gblinear'],  # gblinear
+            'booster': ['gbtree', 'gblinear'],  # gblinear
             'learning_rate': np.arange(0.01, 0.9, 0.01),
+<<<<<<< HEAD
+            'n_estimators': range(50, 1000, 50),
+            'subsample': np.arange(0.1, 0.9, 0.1),
+            'max_depth': range(2, 7),  # Tree Depth
+            'objective': ['binary:logistic'],  # 'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
+            'eval_metric': ['merror', 'logloss', 'auc']  # Evaluation metric
+=======
             'n_estimators': range(50,1000,50),
             'subsample': np.arange(0.1,0.9,0.1),
             'max_depth': range(2,7),  # Tree Depth
-            'objective': ['binary:logistic'],#,'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
+            'objective': ['binary:logistic'],  # 'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
             'eval_metric': ['merror','logloss','auc']  # Evaluation metric
+>>>>>>> origin/tirth_patel
         }
         model = xgb.XGBClassifier()
         grid_search = GridSearchCV(model, params, cv=5, scoring="recall")
-        grid_search.fit(self.X_train,self.y_train)
+        grid_search.fit(self.X_train, self.y_train)
         
-        best_param=grid_search.best_params_
+        best_param = grid_search.best_params_
         
         # XGB CLF
         xgb_clf = xgb.XGBClassifier(**best_param)

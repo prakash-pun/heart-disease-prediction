@@ -2,7 +2,8 @@ from feature_extraction import extract_feature
 from split_dataset import split_data
 from fill_data import fill_data
 from scale import scale_minmax
-from models.train_model import TrainModel
+from rp_gbm_model import rp_gbm_model
+
 from utils import generate_table
 import pandas as pd
 from model_tuners import train_lime_explainer, explain_prediction
@@ -25,6 +26,8 @@ scaled_test_data = scale_minmax(filled_x_test)
 X_train = extract_feature(data_frame=scaled_train_data, y_train=y_train)
 X_test = extract_feature(data_frame=scaled_test_data, y_train=y_test)
 
+Model_Evaluation = (X_train, X_test, y_train, y_test)
+print("Gradient Boosting:", Morp_gbm_modeldel_Evaluation)
 # Train Models
 model = TrainModel(X_train, X_test, y_train, y_test)
 

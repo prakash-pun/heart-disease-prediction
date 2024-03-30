@@ -49,18 +49,17 @@ class TrainModel():
         params = {
             'booster': ['gbtree', 'gblinear'],  # gblinear
             'learning_rate': np.arange(0.01, 0.9, 0.01),
-            'n_estimators': range(50, 1000, 50),
-            # ,'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
-            'objective': ['binary:logistic'],
-            'eval_metric': ['merror', 'logloss', 'auc'],  # Evaluation metric
+            'n_estimators': range(50,1000,50),
+            'objective': ['binary:logistic'],#,'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
+            'eval_metric': ['merror','logloss','auc'] # Evaluation metric
             # 'subsample': np.arange(0.1, 0.9, 0.1),
             # 'max_depth': range(2, 7)
         }
         model = xgb.XGBClassifier()
         random_search = RandomizedSearchCV(estimator=model, param_distributions=params,
                                            n_iter=100, scoring="recall", cv=5, random_state=42, n_jobs=-1)
+        
         random_search.fit(self.X_train, self.y_train)
-
         best_param = random_search.best_params_
 
         # XGB CLF
