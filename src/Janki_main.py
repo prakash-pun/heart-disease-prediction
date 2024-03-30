@@ -7,6 +7,10 @@ from utils import generate_table
 
 X_train, X_test, y_train, y_test = split_data()
 
+# Data Increment
+X_train = pd.concat([X_train, X_train], ignore_index=False)
+y_train = pd.concat([y_train, y_train], ignore_index=False)
+
 # Data Filling
 filled_x_train = fill_data(data_frame=X_train)
 filled_x_test = fill_data(data_frame=X_test)
@@ -26,21 +30,7 @@ model = TrainModel(X_train, X_test, y_train, y_test)
 result_lr = model.logistic_regression_model()
 print("Logistic Regression:", result_lr)
 
-# XGBoost
-xg_boost = model.xg_boost()
-print("XGBoost_CLF ", xg_boost)
+# Best hyperparameters
+print("Best Parameters:", random_search.best_params_)
 
-# Gradient Bosting Machine
-gbm = model.gbm_model()
-print("Gradient Boosting: ", gbm)
 
-metrics = {
-    "Logistic Regression Train": list(result_lr[0]),
-    "Logistic Regression Test": list(result_lr[1]),
-    "XGBoost_CLF Train": list(xg_boost[0]),
-    "XGBoost_CLF Test": list(xg_boost[1]),
-    "Gradient Boosting Train": list(gbm[0]),
-    "Gradient Boosting Test": list(gbm[1]),
-}
-
-generate_table(metrics)
