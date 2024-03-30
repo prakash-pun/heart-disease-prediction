@@ -1,12 +1,27 @@
-import numpy as np
-from sklearn import svm
 from sklearn.model_selection import RandomizedSearchCV
+from sklearn import svm
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
 import xgboost as xgb
+import matplotlib.pyplot as plt
+import numpy as np
+
+
 # import lightgbm as lgbm
+
+
+def plot_roc(fpr, tpr):
+    # Plot ROC curve
+    plt.plot(fpr, tpr, color='blue', label='ROC Curve')
+    plt.plot([0, 1], [0, 1], color='red',
+             linestyle='--', label='Random Guessing')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC Curve')
+    plt.legend()
+    plt.show()
 
 
 def metrics(y_test, predictions, proba):
@@ -42,24 +57,30 @@ class TrainModel():
         result_test = metrics(self.y_test, prediction, test_proba[:, 1])
         result_train = metrics(self.y_train, train_predict, train_proba[:, 1])
 
-        return {"train": result_train, "test": result_test, "predict": logreg}
+        # Calculate feature importances
+        feature_importance = np.abs(logreg.coef_[0])
+        feature_importance /= feature_importance.sum()
+        feature_names = self.X_train.columns.tolist()
+
+        return result_train, result_test, feature_importance, feature_names
 
     def xg_boost(self):
         # Define parameters for XGBoost
         params = {
             'booster': ['gbtree', 'gblinear'],  # gblinear
             'learning_rate': np.arange(0.01, 0.9, 0.01),
-            'n_estimators': range(50,1000,50),
-            'objective': ['binary:logistic'],#,'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
-            'eval_metric': ['merror','logloss','auc'] # Evaluation metric
+            'n_estimators': range(50, 1000, 50),
+            'objective': ['binary:logistic'],
+            # ,'multi:softmax','multi:softprob','reg:logitstic'],  # Binary classification
+            'eval_metric': ['merror', 'logloss', 'auc'],  # Evaluation metric
             # 'subsample': np.arange(0.1, 0.9, 0.1),
             # 'max_depth': range(2, 7)
         }
         model = xgb.XGBClassifier()
         random_search = RandomizedSearchCV(estimator=model, param_distributions=params,
                                            n_iter=100, scoring="recall", cv=5, random_state=42, n_jobs=-1)
-        
         random_search.fit(self.X_train, self.y_train)
+
         best_param = random_search.best_params_
 
         # XGB CLF
@@ -76,12 +97,14 @@ class TrainModel():
         predict_proba = xgb_clf.predict_proba(self.X_test)
 
         # Calculate metrics
-        result_train = metrics(
-            self.y_train, train_predictions_clf, train_proba[:, 1])
-        result = metrics(self.y_test, binary_predictions_clf,
-                         predict_proba[:, 1])
+        result_train = metrics(self.y_train, train_predictions_clf, train_proba[:, 1])
+        result = metrics(self.y_test, binary_predictions_clf, predict_proba[:, 1])
 
-        return {"train": result_train, "test": result, "predict": xgb_clf}
+        # Calculate feature importances
+        feature_importance = xgb_clf.feature_importances_
+        feature_names = self.X_train.columns.tolist()
+
+        return result_train, result, feature_importance, feature_names
 
     def gbm_model(self):
         # Initialize the Gradient Boosting Classifier
@@ -102,9 +125,14 @@ class TrainModel():
         result = metrics(self.y_test, prediction, predict_proba[:, 1])
         result_train = metrics(self.y_train, train_predict, train_proba[:, 1])
 
-        return {"train": result_train, "test": result}
+        # Calculate feature importances
+        feature_importance = gradient_boosting.feature_importances_
+        feature_names = self.X_train.columns.tolist()
+
+        return result_train, result, feature_importance, feature_names
 
     # Unused Models
+
     def knn_model(self):
         # Train the classifier
         knn_classifier = KNeighborsClassifier(n_neighbors=10)
@@ -144,7 +172,6 @@ class TrainModel():
         return result
 
     def light_gbm(self):
-
         parameters = {
             "objective": "binary",  # binary_logloss/multiclass
             # droptrees#gbdt(decision trees)/goss(one side sampling(DO NOT Understand))
