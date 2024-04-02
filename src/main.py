@@ -73,11 +73,6 @@ metrics = {
 generate_table(metrics)
 
 # Plotting
-plot_feature_importance(model.logistic_regression_model(), feature_names, file_name='log_plot')
-feature_importance_lr = calculate_feature_importance(model.logistic_regression_model(), feature_names)
-
-plot_feature_importance(xg_boost, feature_names, file_name='xgb_plot')
-feature_importance_xgb = calculate_feature_importance(xg_boost, feature_names)
-
-plot_feature_importance(gbm, feature_names, file_name='gbm_plot')
-feature_importance_gbm = calculate_feature_importance(gbm, feature_names)
+plot_feature_importance(result_lr, result_lr["feature_names"], file_name='log_plot')
+plot_feature_importance(xg_boost, xg_boost["feature_names"], file_name='xgb_plot')
+plot_feature_importance(gbm, gbm["feature_names"], file_name='gbm_plot')

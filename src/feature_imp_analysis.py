@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 def plot_feature_importance(model_result, feature_names, file_name, top_n=10, file_format='png'):
     if isinstance(model_result, tuple):
         feature_importance = model_result[2]
