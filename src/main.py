@@ -6,6 +6,8 @@ from split_dataset import split_data
 from utils import generate_table
 from fill_data import fill_data
 from scale import scale_minmax
+from feature_imp_analysis import plot_feature_importance, calculate_feature_importance
+
 
 X_train, X_test, y_train, y_test = split_data()
 
@@ -69,3 +71,13 @@ metrics = {
 }
 
 generate_table(metrics)
+
+# Plotting
+plot_feature_importance(model.logistic_regression_model(), feature_names, file_name='log_plot')
+feature_importance_lr = calculate_feature_importance(model.logistic_regression_model(), feature_names)
+
+plot_feature_importance(xg_boost, feature_names, file_name='xgb_plot')
+feature_importance_xgb = calculate_feature_importance(xg_boost, feature_names)
+
+plot_feature_importance(gbm, feature_names, file_name='gbm_plot')
+feature_importance_gbm = calculate_feature_importance(gbm, feature_names)
