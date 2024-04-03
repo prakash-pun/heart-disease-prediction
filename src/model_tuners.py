@@ -1,4 +1,3 @@
-import lime
 from lime.lime_tabular import LimeTabularExplainer
 
 
