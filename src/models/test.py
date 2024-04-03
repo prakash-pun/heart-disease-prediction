@@ -106,7 +106,6 @@ class TrainModel():
 
         return {"train": result_train, "test": result, "predict": xgb_clf, "feature_importance": feature_importance, "feature_names": feature_names}
 
-
     def gbm_model(self):
         # Initialize the Gradient Boosting Classifier
         gradient_boosting = GradientBoostingClassifier(

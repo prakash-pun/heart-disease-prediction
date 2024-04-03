@@ -1,11 +1,14 @@
 import pandas as pd
-from model_tuners import train_lime_explainer, explain_prediction
+from model_tuners import ModelTuning
+
 from feature_extraction import extract_feature
 from models.train_model import TrainModel
 from split_dataset import split_data
 from utils import generate_table
 from fill_data import fill_data
 from scale import scale_minmax
+from feature_imp_analysis import plot_feature_importance, calculate_feature_importance
+
 
 X_train, X_test, y_train, y_test = split_data()
 
@@ -23,7 +26,9 @@ scaled_test_data = scale_minmax(filled_x_test)
 
 # Features
 X_train = extract_feature(data_frame=scaled_train_data, y_train=y_train)
-X_test = extract_feature(data_frame=scaled_test_data, y_train=y_test)
+train_columns = list(X_train.columns)
+
+X_test = scaled_test_data[train_columns]
 
 # Train Models
 model = TrainModel(X_train, X_test, y_train, y_test)
@@ -39,23 +44,39 @@ print("XGBoost_CLF ", xg_boost)
 # Performing lime on Xgboost
 feature_names = X_train.columns.tolist()
 
+# sample_index = 0
+# # Train a LIME explainer
+# explainer = train_lime_explainer(X_train, feature_names)
+#
+# # predict_fn = lambda x: model.predict(xgb.DMatrix(x))
+#
+# # Explain a prediction
+# sample = X_test.values[sample_index]
+#
+#
+# explanation = explainer.explain_instance(
+#     sample, xg_boost["predict"].predict_proba, num_features=len(feature_names))
+# # Display the explanation
+# print(explanation.as_list())
+
+
+# Create an instance of ModelTuning
+model_tuner = ModelTuning(X_train, feature_names)
+
+# Assuming xg_boost is an XGBoost model
 sample_index = 0
-# Train a LIME explainer
-explainer = train_lime_explainer(X_train, feature_names)
-
-# predict_fn = lambda x: model.predict(xgb.DMatrix(x))
-
-# Explain a prediction
 sample = X_test.values[sample_index]
+pred_prob = xg_boost["predict"].predict_proba(sample.reshape(1, -1))
 
+predict_fn = lambda x: pred_prob
 
-explanation = explainer.explain_instance(
-    sample, xg_boost["predict"].predict_proba, num_features=len(feature_names))
+# Explain a prediction using the ModelTuning instance
+explanation = model_tuner.explain_prediction(sample, predict_fn, num_features=len(feature_names))
+
 # Display the explanation
 print(explanation.as_list())
 
-
-# # Gradient Bosting Machine
+# Gradient Bosting Machine
 gbm = model.gbm_model()
 print("Gradient Boosting: ", gbm)
 
@@ -69,3 +90,8 @@ metrics = {
 }
 
 generate_table(metrics)
+
+# Plotting
+plot_feature_importance(result_lr, result_lr["feature_names"], file_name='log_plot')
+plot_feature_importance(xg_boost, xg_boost["feature_names"], file_name='xgb_plot')
+plot_feature_importance(gbm, gbm["feature_names"], file_name='gbm_plot')
