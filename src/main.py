@@ -1,5 +1,5 @@
 import pandas as pd
-from model_tuners import train_lime_explainer, explain_prediction
+from model_tuners import train_lime_explainer
 from feature_extraction import extract_feature
 from models.train_model import TrainModel
 from split_dataset import split_data
@@ -25,7 +25,9 @@ scaled_test_data = scale_minmax(filled_x_test)
 
 # Features
 X_train = extract_feature(data_frame=scaled_train_data, y_train=y_train)
-X_test = extract_feature(data_frame=scaled_test_data, y_train=y_test)
+train_columns = list(X_train.columns)
+
+X_test = scaled_test_data[train_columns]
 
 # Train Models
 model = TrainModel(X_train, X_test, y_train, y_test)
