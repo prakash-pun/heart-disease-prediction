@@ -1,5 +1,6 @@
 import pandas as pd
-from model_tuners import train_lime_explainer
+from model_tuners import ModelTuning
+
 from feature_extraction import extract_feature
 from models.train_model import TrainModel
 from split_dataset import split_data
@@ -43,23 +44,39 @@ print("XGBoost_CLF ", xg_boost)
 # Performing lime on Xgboost
 feature_names = X_train.columns.tolist()
 
+# sample_index = 0
+# # Train a LIME explainer
+# explainer = train_lime_explainer(X_train, feature_names)
+#
+# # predict_fn = lambda x: model.predict(xgb.DMatrix(x))
+#
+# # Explain a prediction
+# sample = X_test.values[sample_index]
+#
+#
+# explanation = explainer.explain_instance(
+#     sample, xg_boost["predict"].predict_proba, num_features=len(feature_names))
+# # Display the explanation
+# print(explanation.as_list())
+
+
+# Create an instance of ModelTuning
+model_tuner = ModelTuning(X_train, feature_names)
+
+# Assuming xg_boost is an XGBoost model
 sample_index = 0
-# Train a LIME explainer
-explainer = train_lime_explainer(X_train, feature_names)
-
-# predict_fn = lambda x: model.predict(xgb.DMatrix(x))
-
-# Explain a prediction
 sample = X_test.values[sample_index]
+pred_prob = xg_boost["predict"].predict_proba(sample.reshape(1, -1))
 
+predict_fn = lambda x: pred_prob
 
-explanation = explainer.explain_instance(
-    sample, xg_boost["predict"].predict_proba, num_features=len(feature_names))
+# Explain a prediction using the ModelTuning instance
+explanation = model_tuner.explain_prediction(sample, predict_fn, num_features=len(feature_names))
+
 # Display the explanation
 print(explanation.as_list())
 
-
-# # Gradient Bosting Machine
+# Gradient Bosting Machine
 gbm = model.gbm_model()
 print("Gradient Boosting: ", gbm)
 
