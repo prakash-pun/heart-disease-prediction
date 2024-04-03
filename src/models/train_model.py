@@ -1,4 +1,5 @@
 import numpy as np
+import joblib
 from sklearn import svm
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.linear_model import LogisticRegression
@@ -7,7 +8,7 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
 import xgboost as xgb
 import matplotlib.pyplot as plt
-import lightgbm as lgbm
+# import lightgbm as lgbm
 
 def plot_roc(fpr, tpr):
     # Plot ROC curve
@@ -58,6 +59,9 @@ class TrainModel():
         feature_importance /= feature_importance.sum()
         feature_names = self.X_train.columns.tolist()
 
+        filename = "src/dump_model/logistic_model.joblib"
+        joblib.dump(logreg, filename=filename)
+
         return {"train": result_train, "test": result_test, "predict": logreg, "feature_importance": feature_importance, "feature_names": feature_names}
 
     def xg_boost(self):
@@ -101,6 +105,8 @@ class TrainModel():
         # Calculate feature importances
         feature_importance = xgb_clf.feature_importances_
         feature_names = self.X_train.columns.tolist()
+        filename = "src/dump_model/xg_boost_model.joblib"
+        joblib.dump(xgb_clf, filename=filename)
 
         return {"train": result_train, "test": result, "predict": xgb_clf, "feature_importance": feature_importance, "feature_names": feature_names}
 
@@ -127,6 +133,8 @@ class TrainModel():
         # Calculate feature importances
         feature_importance = gradient_boosting.feature_importances_
         feature_names = self.X_train.columns.tolist()
+        filename = "src/dump_model/gbm_model.joblib"
+        joblib.dump(gradient_boosting, filename=filename)
 
         return {"train": result_train, "test": result, "feature_importance": feature_importance, "feature_names": feature_names}
 
