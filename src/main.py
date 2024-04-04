@@ -2,10 +2,10 @@ import pandas as pd
 from utils import DataInitializer
 from data_preprocessing import DataProcessor
 from feature_engineering import FeatureEngines
-from models.train_model import TrainModel
+from models.read_dump_model import DumpTrainModel
 from model_tuners import ModelTuning
 
-#Initializing Modules
+# Initializing Modules
 reader = DataInitializer()
 processor = DataProcessor()
 extractor = FeatureEngines()
@@ -26,17 +26,19 @@ scaled_train_data = extractor.scale_minmax(filled_x_train)
 scaled_test_data = extractor.scale_minmax(filled_x_test)
 
 # Feature Extraction
-X_train = extractor.extract_feature(data_frame=scaled_train_data, y_train=y_train)
+X_train = extractor.extract_feature(
+    data_frame=scaled_train_data, y_train=y_train)
 
 train_columns = list(X_train.columns)
 X_test = scaled_test_data[train_columns]
 
-#%% MODELS
-model = TrainModel(X_train, X_test, y_train, y_test)
+# MODELS
+model = DumpTrainModel(X_train, X_test, y_train, y_test)
 
 # Logistic Regression
 result_lr = model.logistic_regression_model()
-print("Logistic Regression:", result_lr)
+print("Logistic Regression:", result_lr["train"])
+
 
 # XGBoost
 xg_boost = model.xg_boost()
@@ -58,23 +60,28 @@ metrics = {
 
 reader.generate_table(metrics)
 
-#%% EXPLAINERS AND TUNERS
+# EXPLAINERS AND TUNERS
 
-feature_names = X_train.columns.tolist()
-tuners = ModelTuning(X_train, feature_names)
+# feature_names = X_train.columns.tolist()
+# tuners = ModelTuning(X_train, feature_names)
 
-# Parameter for LIME
-sample_index = 0
-sample = X_test.values[sample_index]
-pred_prob = xg_boost["predict"].predict_proba(sample.reshape(1, -1))
+# # Parameter for LIME
+# sample_index = 0
+# sample = X_test.values[sample_index]
+# pred_prob = xg_boost["predict"].predict_proba(sample.reshape(1, -1))
 
-predict_fn = lambda x: pred_prob
 
-# Explaination
-explanation = tuners.explain_prediction(sample, predict_fn, num_features=len(feature_names))
-print(explanation.as_list())
+# def predict_fn(x): return pred_prob
 
-# Plotting
-tuners.plot_feature_importance(result_lr, result_lr["feature_names"], file_name='log_plot')
-tuners.plot_feature_importance(xg_boost, xg_boost["feature_names"], file_name='xgb_plot')
-tuners.plot_feature_importance(gbm, gbm["feature_names"], file_name='gbm_plot')
+
+# # Explaination
+# explanation = tuners.explain_prediction(
+#     sample, predict_fn, num_features=len(feature_names))
+# print(explanation.as_list())
+
+# # Plotting
+# tuners.plot_feature_importance(
+#     result_lr, result_lr["feature_names"], file_name='log_plot')
+# tuners.plot_feature_importance(
+#     xg_boost, xg_boost["feature_names"], file_name='xgb_plot')
+# tuners.plot_feature_importance(gbm, gbm["feature_names"], file_name='gbm_plot')
