@@ -9,13 +9,16 @@ class DataInitializer:
 
     def get_data_directory(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        project_dir = os.path.abspath(os.path.join(current_dir, '..', '..'))
+        project_dir = os.path.abspath(os.path.join(current_dir, '..'))
+        path = os.path.join(project_dir, 'data')
+        print(path)
         
-        return os.path.join(project_dir, 'data')
+        return path
 
     def get_csv_file(self, file_name):
-        
-        return os.path.join(self.data_dir, file_name)
+        path = os.path.join(self.data_dir, file_name)
+        print(path)
+        return path
 
     def get_data(self, file="cleaned_data.csv"):
         path = self.get_csv_file(file)

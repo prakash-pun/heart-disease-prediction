@@ -1,5 +1,5 @@
 import pandas as pd
-from utils import DataInitializer
+from data_loading import DataInitializer
 from data_preprocessing import DataProcessor
 from feature_engineering import FeatureEngines
 from models.read_dump_model import DumpTrainModel
