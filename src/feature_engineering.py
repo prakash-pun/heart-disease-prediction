@@ -23,9 +23,9 @@ class FeatureEngines:
         return scaled_data_frame
 
     def extract_feature(self, data_frame, y_train):
-        df = data_frame.copy(deep=True)
-        raw_correl = df.corrwith(y_train, method='spearman').round(2)
+        raw_correl = data_frame.corrwith(y_train, method='spearman').round(2)
+        self.threshold = 0.18
         raw_cols = raw_correl[abs(raw_correl) > self.threshold].index.tolist()
-        raw_features = df[raw_cols]
+        raw_features = data_frame[raw_cols]
         
         return raw_features
