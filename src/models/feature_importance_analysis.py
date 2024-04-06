@@ -54,17 +54,18 @@ class FeatureImportanceAnalysis:
     def permutation_importance_analysis(self):
         models = self.load_models()
         for model_name, model in models.items():
-            # permutation importance analysis
+            # Permutation importance analysis
             result = permutation_importance(model["predict"], self.X_test, self.y_test, n_repeats=10, random_state=42)
             sorted_idx = result.importances_mean.argsort()
 
-            # Plot permutation importance
-            fig, ax = plt.subplots()
-            ax.boxplot(result.importances[sorted_idx].T, vert=False,
-                       labels=np.array(model["feature_names"])[sorted_idx])
-            ax.set_title(f"Permutation Importances ({model_name} - test set)")
+            # Plot permutation importance as bar graph
+            plt.figure(figsize=(8, 6))
+            plt.barh(np.array(model["feature_names"])[sorted_idx], result.importances_mean[sorted_idx])
+            plt.xlabel('Permutation Importance')
+            plt.title(f'Permutation Importances - {model_name}')
             plt.tight_layout()
             plt.savefig(f'{model_name}_permutation_importance.png')
             plt.show()
             plt.close()
+
 
