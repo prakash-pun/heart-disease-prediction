@@ -4,6 +4,7 @@ from data_preprocessing import DataProcessor
 from feature_engineering import FeatureEngines
 from models.read_dump_model import DumpTrainModel
 from model_tuners import ModelTuning
+from models.feature_importance_analysis import FeatureImportanceAnalysis
 
 # Initializing Modules
 reader = DataInitializer()
@@ -39,7 +40,6 @@ model = DumpTrainModel(X_train, X_test, y_train, y_test)
 result_lr = model.logistic_regression_model()
 print("Logistic Regression:", result_lr["train"])
 
-
 # XGBoost
 xg_boost = model.xg_boost()
 print("XGBoost_CLF ", xg_boost)
@@ -48,7 +48,7 @@ print("XGBoost_CLF ", xg_boost)
 gbm = model.gbm_model()
 print("Gradient Boosting: ", gbm)
 
-# ResultsS
+# Results
 metrics = {
     "Logistic Regression Train": list(result_lr["train"]),
     "Logistic Regression Test": list(result_lr["test"]),
@@ -60,28 +60,36 @@ metrics = {
 
 reader.generate_table(metrics)
 
-#%% EXPLAINERS AND TUNERS
-
+# EXPLAINERS AND TUNERS
 feature_names = X_train.columns.tolist()
 tuners = ModelTuning(X_train, feature_names)
 
-# Parameter for LIME
-sample_index = 0
-sample = X_test.values[sample_index]
-pred_prob = xg_boost["predict"].predict_proba(sample.reshape(1, -1))
-
-
-def predict_fn(x): return pred_prob
-
-
-# Explaination
-explanation = tuners.explain_prediction(
-    sample, predict_fn, num_features=len(feature_names))
-print(explanation.as_list())
+# Parameters for LIME
+# sample_index = 0
+# sample = X_test.values[sample_index]
+# pred_prob = xg_boost["predict"].predict_proba(sample.reshape(1, -1))
+#
+# # Predict function for LIME
+# def predict_fn(x):
+#     return xg_boost["predict"].predict_proba(x.reshape(1, -1))
+#
+# # Explanation
+# explanation = tuners.explainer.explain_instance(sample, predict_fn, num_features=len(feature_names))
+# print(explanation.as_list())
 
 # Plotting
-tuners.plot_feature_importance(
-    result_lr, result_lr["feature_names"], file_name='log_plot')
-tuners.plot_feature_importance(
-    xg_boost, xg_boost["feature_names"], file_name='xgb_plot')
-tuners.plot_feature_importance(gbm, gbm["feature_names"], file_name='gbm_plot')
+# tuners.plot_feature_importance(
+#     result_lr, file_name='log_plot')
+# tuners.plot_feature_importance(
+#     xg_boost, file_name='xgb_plot')
+# tuners.plot_feature_importance(gbm, file_name='gbm_plot')
+
+# feature_importance_analysis followed by permutation analysis
+model_files = {
+    "Logistic Regression": "logistic_model.joblib",
+    "XGBoost": "xg_boost_model.joblib",
+    "Gradient Boosting": "gbm_model.joblib"
+}
+feature_importance_analysis = FeatureImportanceAnalysis(model_files, X_test, y_test)
+feature_importance_analysis.plot_feature_importance()
+feature_importance_analysis.permutation_importance_analysis()

@@ -125,7 +125,9 @@ class TrainModel():
         filename = "src/dump_model/gbm_model.joblib"
         joblib.dump(gradient_boosting, filename=filename)
 
-        return {"train": result_train, "test": result, "feature_importance": feature_importance, "feature_names": feature_names}
+        # Return a tuple with train_metrics, test_metrics, and feature_importance
+        return {"train": result_train, "test": result, "feature_importance": feature_importance,
+                "feature_names": feature_names}, {}, feature_importance
 
     # Unused Models
     def knn_model(self):
