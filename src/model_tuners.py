@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from lime.lime_tabular import LimeTabularExplainer
 
-class ModelTuning:
+class ModelTuning():
     
     def __init__(self, X_train, feature_names):
         self.X_train = X_train
@@ -17,9 +17,11 @@ class ModelTuning:
         return explainer
 
     def explain_prediction(self, sample, pred_prob, num_features, top_labels=1):
+        # Reshape the sample
+        sample = sample.reshape(1, -1)
         explanation = self.explainer.explain_instance(sample, pred_prob,
-                                             num_features=num_features,
-                                             top_labels=top_labels)
+                                                      num_features=num_features,
+                                                      top_labels=top_labels)
         return explanation
 
     def plot_feature_importance(self, model_result, file_name, top_n=10, file_format='png'):

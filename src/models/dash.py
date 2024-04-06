@@ -19,7 +19,7 @@ def samefeature(x,y):
 def calculate_and_add_bmi(input_data):
     # Calculate BMI
     input_data['bmi'] = input_data['weight'] / (input_data['height'] ** 2)
-    input_data['bmi'] = input_data['bmi']
+    input_data['bmi'] = input_data['bmi'].round()
 
     return input_data
 
@@ -45,3 +45,4 @@ def encode_input_data(input_data, user_input):
                 input_data[feature] = value  # Update other features as usual
 
     return input_data
+

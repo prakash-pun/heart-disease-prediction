@@ -19,7 +19,7 @@ def get_dump_model(filename):
     return model
 
 
-class DumpTrainModel():
+class DumpTrainModel:
 
     def __init__(self, X_train, X_test, y_train, y_test):
         self.X_train = X_train

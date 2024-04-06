@@ -11,7 +11,7 @@ from joblib import load, dump
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-# import scikitplot as skplt
+import scikitplot as skplt
 
 from models.dash import samefeature, calculate_and_add_bmi, preprocess_input_data, encode_input_data
 
@@ -32,14 +32,15 @@ y_train = pd.concat([y_train, y_train], ignore_index=False)
 filled_x_train = dp.fill_data(data_frame=X_train)
 filled_x_test = dp.fill_data(data_frame=X_test)
 
+
 # Data Scaling
 min_max_scaler = MinMaxScaler()
-scaled_data = min_max_scaler.fit_transform(filled_x_train)
-scaled_data_frame = pd.DataFrame(scaled_data, columns=data_frame.columns)
-scaled_data_frame.index = data_frame.index
 
+# Fit and transform the training data
 scaled_train_data = fe.scale_minmax(filled_x_train)
 scaled_test_data = fe.scale_minmax(filled_x_test)
+
+
 
 # Features
 X_train = fe.extract_feature(data_frame=scaled_train_data, y_train=y_train)
@@ -56,7 +57,7 @@ def metrics(y_test, predictions, proba):
 
     return accuracy, precision, recall, f_score, roc_auc
 
-# #xgboost
+#xgboost
 # params = {
 #             'booster': ['gbtree', 'gblinear'],  # gblinear
 #             'learning_rate': np.arange(0.01, 0.9, 0.01),
@@ -82,7 +83,7 @@ def metrics(y_test, predictions, proba):
 # train_predictions_clf = (train_predict > 0.5).astype(int)
 # train_proba = xgb_clf.predict_proba(X_train)
 #
-# predictions = xgb_clf.predict(X_test)
+# predictions_clf = xgb_clf.predict(X_test)
 # binary_predictions_clf = (predictions_clf > 0.5).astype(int)
 # predict_proba = xgb_clf.predict_proba(X_test)
 #
@@ -90,11 +91,11 @@ def metrics(y_test, predictions, proba):
 # result_train = metrics(y_train, train_predictions_clf, train_proba[:, 1])
 # result = metrics(y_test, binary_predictions_clf,predict_proba[:, 1])
 #
-# # # saving a model
+# # saving a model
 # dump(xgb_clf,"../src/models/xg.model")
 
-# load model
-rf_classif = load("../src/models/xg.model")
+# model load
+rf_classif = load("../src/dump_model/xg_boost_model.joblib")
 
 # for checking if this is working or not
 prediction = rf_classif.predict(X_test)
@@ -139,19 +140,27 @@ with tab3:
                 options[feature_name] = option
 
         input_data = pd.DataFrame([sliders], columns=data_frame.columns)
-        print(input_data.to_string())
         input_data = calculate_and_add_bmi(input_data)
         print(input_data.to_string())
-        # input_data = fe.scale_minmax(input_data)
+        #scaling
+        selected_features = ['age', 'height', 'weight', 'bp_high', 'bp_lo', 'bmi']
+        min_vals = filled_x_train[selected_features].min()
+        max_vals = filled_x_train[selected_features].max()
+
+
+        def min_max_scaler(row, min_vals, max_vals):
+            scaled_row = (row[selected_features] - min_vals) / (max_vals - min_vals)
+            return scaled_row
+
+        scaled_input_values = min_max_scaler(input_data, min_vals, max_vals)
+
+        input_data[selected_features] = scaled_input_values
+        input_data = preprocess_input_data(input_data, filled_x_train)
+        input_data = encode_input_data(input_data, options)
         print(input_data.to_string())
-        y=preprocess_input_data(input_data, filled_x_train)
-        print(y.to_string())
-        y=encode_input_data(y, options)
-        print(y.to_string())
-
-        y = samefeature(X_train, y)
-
-        print(y.to_string())
+        st.write(input_data)
+        y = samefeature(X_train, input_data)
+        st.write(y)
 
     with col2:
         col1, col2 = st.columns(2, gap="medium")

@@ -63,7 +63,7 @@ class Visualizer:
         plt.legend(loc='lower right')
         plt.show()
         
-    def plot_confusion_matrix(conf_matrix):
+    def plot_confusion_matrix(self, conf_matrix):
 
         # y_pred = model.predict(X_test)
         # conf_matrix = confusion_matrix(y_test, y_pred)
