@@ -32,6 +32,11 @@ filled_x_train = dp.fill_data(data_frame=X_train)
 filled_x_test = dp.fill_data(data_frame=X_test)
 
 # Data Scaling
+min_max_scaler = MinMaxScaler()
+scaled_data = min_max_scaler.fit_transform(filled_x_train)
+scaled_data_frame = pd.DataFrame(scaled_data, columns=data_frame.columns)
+scaled_data_frame.index = data_frame.index
+
 scaled_train_data = fe.scale_minmax(filled_x_train)
 scaled_test_data = fe.scale_minmax(filled_x_test)
 
@@ -133,10 +138,15 @@ with tab3:
                 options[feature_name] = option
 
         input_data = pd.DataFrame([sliders], columns=data_frame.columns)
+        print(input_data.to_string())
         input_data = calculate_and_add_bmi(input_data)
-        #input_data = fe.scale_minmax(input_data)
+        print(input_data.to_string())
+        input_data = fe.scale_minmax(input_data)
+        print(input_data.to_string())
         y=preprocess_input_data(input_data, filled_x_train)
+        print(y.to_string())
         y=encode_input_data(y, options)
+        print(y.to_string())
 
         y = samefeature(X_train, y)
 
