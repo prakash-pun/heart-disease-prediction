@@ -1,6 +1,22 @@
 import os
 import pandas as pd
 from sklearn.model_selection import train_test_split 
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score, roc_curve, confusion_matrix
+
+def metrics(y_test, predictions, proba):
+    accuracy = accuracy_score(y_test, predictions)
+    precision = precision_score(y_test, predictions)
+    recall = recall_score(y_test, predictions)
+    f_score = f1_score(y_test, predictions)
+    roc_auc = roc_auc_score(y_test, proba)
+
+    fpr, tpr, thresholds = roc_curve(y_test, proba)
+
+    conf_matrix = confusion_matrix(y_test, predictions)
+
+
+    return accuracy, precision, recall, f_score, roc_auc, fpr, tpr, conf_matrix 
+
 
 class DataInitializer:
     

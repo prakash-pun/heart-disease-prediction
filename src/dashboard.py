@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import scikitplot as skplt
+
 from models.dash import samefeature, calculate_and_add_bmi, preprocess_input_data, encode_input_data
 
 di = DataInitializer()
@@ -94,7 +95,7 @@ def metrics(y_test, predictions, proba):
 # dump(xgb_clf,"../src/models/xg.model")
 
 # model load
-rf_classif = load("../src/models/xg.model")
+rf_classif = load("../src/dump_model/xg_boost_model.joblib")
 
 # for checking if this is working or not
 prediction = rf_classif.predict(X_test)

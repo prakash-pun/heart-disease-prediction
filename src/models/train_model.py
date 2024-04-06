@@ -5,19 +5,11 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
 import xgboost as xgb
 import lightgbm as lgbm
+from utils import metrics
 
 
-def metrics(y_test, predictions, proba):
-    accuracy = accuracy_score(y_test, predictions)
-    precision = precision_score(y_test, predictions)
-    recall = recall_score(y_test, predictions)
-    f_score = f1_score(y_test, predictions)
-    roc_auc = roc_auc_score(y_test, proba)
-
-    return accuracy, precision, recall, f_score, roc_auc
 
 
 class TrainModel():

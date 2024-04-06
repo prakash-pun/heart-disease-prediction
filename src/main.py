@@ -5,11 +5,13 @@ from feature_engineering import FeatureEngines
 from models.read_dump_model import DumpTrainModel
 from model_tuners import ModelTuning
 from models.feature_importance_analysis import FeatureImportanceAnalysis
+from visualize import Visualizer
 
 # Initializing Modules
 reader = DataInitializer()
 processor = DataProcessor()
 extractor = FeatureEngines()
+plotter = Visualizer()
 
 # Data Preparation
 X_train, X_test, y_train, y_test = reader.split_data()
@@ -42,7 +44,11 @@ print("Logistic Regression:", result_lr["train"])
 
 # XGBoost
 xg_boost = model.xg_boost()
-print("XGBoost_CLF ", xg_boost)
+# print("XGBoost_CLF ", xg_boost["fpr"])
+
+plotter.plot_roc(fpr=xg_boost["test"][5], tpr=xg_boost["test"][6], auc_score=xg_boost["test"][4])
+plotter.plot_confusion_matrix(xg_boost["test"][7])
+
 
 # Gradient Bosting Machine
 gbm = model.gbm_model()
@@ -58,11 +64,11 @@ metrics = {
     "Gradient Boosting Test": list(gbm["test"]),
 }
 
-reader.generate_table(metrics)
+# reader.generate_table(metrics)
 
 # EXPLAINERS AND TUNERS
-feature_names = X_train.columns.tolist()
-tuners = ModelTuning(X_train, feature_names)
+# feature_names = X_train.columns.tolist()
+# tuners = ModelTuning(X_train, feature_names)
 
 # Parameters for LIME
 # sample_index = 0
@@ -85,11 +91,11 @@ tuners = ModelTuning(X_train, feature_names)
 # tuners.plot_feature_importance(gbm, file_name='gbm_plot')
 
 # feature_importance_analysis followed by permutation analysis
-model_files = {
-    "Logistic Regression": "logistic_model.joblib",
-    "XGBoost": "xg_boost_model.joblib",
-    "Gradient Boosting": "gbm_model.joblib"
-}
-feature_importance_analysis = FeatureImportanceAnalysis(model_files, X_test, y_test)
-feature_importance_analysis.plot_feature_importance()
-feature_importance_analysis.permutation_importance_analysis()
+# model_files = {
+#     "Logistic Regression": "logistic_model.joblib",
+#     "XGBoost": "xg_boost_model.joblib",
+#     "Gradient Boosting": "gbm_model.joblib"
+# }
+# feature_importance_analysis = FeatureImportanceAnalysis(model_files, X_test, y_test)
+# feature_importance_analysis.plot_feature_importance()
+# feature_importance_analysis.permutation_importance_analysis()

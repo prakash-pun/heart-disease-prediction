@@ -1,7 +1,7 @@
 import os
 import joblib
 import numpy as np
-from .train_model import metrics
+from utils import metrics
 
 
 def get_dump_file(filename=""):
