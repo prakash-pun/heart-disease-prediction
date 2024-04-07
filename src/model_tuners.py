@@ -2,8 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from lime.lime_tabular import LimeTabularExplainer
 
+
 class ModelTuning():
-    
+
     def __init__(self, X_train, feature_names):
         self.X_train = X_train
         self.feature_names = feature_names
@@ -25,8 +26,9 @@ class ModelTuning():
         return explanation
 
     def plot_feature_importance(self, model_result, file_name, top_n=10, file_format='png'):
-        if isinstance(model_result, tuple):
-            feature_importance = model_result[2]
+        print(model_result)
+        if isinstance(model_result, dict):
+            feature_importance = model_result["feature_importance"]
             if feature_importance is not None:
                 top_indices = np.argsort(feature_importance)[::-1][:top_n]
                 top_features = [self.feature_names[i] for i in top_indices]
@@ -47,11 +49,13 @@ class ModelTuning():
             print("Invalid model result format.")
 
     def calculate_feature_importance(self, model_result):
-        if isinstance(model_result, tuple):
-            feature_importance = model_result[2]
+        if isinstance(model_result, dict):
+            feature_importance = model_result["feature_importance"]
             if feature_importance is not None:
-                feature_importance_list = [(feature, importance) for feature, importance in zip(self.feature_names, feature_importance)]
-                feature_importance_list = sorted(feature_importance_list, key=lambda x: x[1], reverse=True)
+                feature_importance_list = [(feature, importance) for feature, importance in zip(
+                    self.feature_names, feature_importance)]
+                feature_importance_list = sorted(
+                    feature_importance_list, key=lambda x: x[1], reverse=True)
                 return feature_importance_list
             else:
                 print("Feature importances not available for this model.")

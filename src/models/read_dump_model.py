@@ -90,4 +90,4 @@ class DumpTrainModel:
         feature_importance = gradient_boosting.feature_importances_
         feature_names = self.X_train.columns.tolist()
 
-        return {"train": result_train, "test": result, "feature_importance": feature_importance, "feature_names": feature_names}
+        return {"train": result_train, "test": result, "predict": gradient_boosting , "feature_importance": feature_importance, "feature_names": feature_names}
