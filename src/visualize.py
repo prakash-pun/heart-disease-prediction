@@ -38,7 +38,7 @@ class Visualizer:
     def scatter(self, data_frame,target):
         for col in data_frame.columns:
             plt.figure(figsize=(8, 8))
-            sns.scatterplot(data=data_frame, x=col, y=target["cardio"])
+            sns.scatterplot(data=data_frame, x=col, y=target)
             plt.title(f"Scatter plot of {col} vs cardio")
             plt.show()
 
