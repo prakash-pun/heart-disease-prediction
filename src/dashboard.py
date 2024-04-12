@@ -10,6 +10,7 @@ from models.dash import samefeature, calculate_and_add_bmi, preprocess_input_dat
 from sklearn.preprocessing import MinMaxScaler
 from feature_engineering import FeatureEngines
 from data_preprocessing import DataProcessor
+from models.feature_importance_analysis import FeatureImportanceAnalysis
 from utils import DataInitializer
 # import scikitplot as skplt
 
@@ -65,6 +66,11 @@ rf_classif = load(f"{working_dir}/dump_model/xg_boost_model.joblib")
 # for checking if this is working or not
 prediction = rf_classif.predict(X_test)
 
+working_dir = os.path.dirname(os.path.abspath(__file__))
+rf_classif = load(f"{working_dir}/dump_model/xg_boost_model.joblib")
+
+# Instantiate the FeatureImportanceAnalysis class
+feature_analysis = FeatureImportanceAnalysis(model_files={"XGBoost": "xg_boost_model.joblib"}, X_test=X_test, y_test=y_test)
 
 with tab1:
     st.header("📊  Data Visualizer")
@@ -113,7 +119,7 @@ with tab1:
 
 
 with tab2:
-    st.header("Confusion Matrix | Feature Importances")
+    st.header("Confusion Matrix ")
     col1, col2 = st.columns(2)
     with col1:
         conf_mat_fig = plt.figure(figsize=(6, 6))
@@ -143,6 +149,14 @@ with tab2:
     st.divider()
     st.header("Classification Report")
     st.code(classification_report(y_test, prediction))
+
+    st.header("Model Performance Metrics")
+
+    # Plot Feature Importance
+    feature_analysis.plot_feature_importance()
+
+    # Permutation Importance Analysis
+    feature_analysis.permutation_importance_analysis()
 
 with tab3:
 
