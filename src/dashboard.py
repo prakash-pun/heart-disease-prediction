@@ -36,7 +36,7 @@ custom_css = """
 st.markdown(custom_css, unsafe_allow_html=True)
 
 tab1, tab2, tab3 = st.tabs(
-    ["Data :clipboard:", "Performance :weight_lifter:", "Local Performance :bicyclist:"])
+    ["Data :clipboard:", "Performance :weight_lifter:", "Prediction :bicyclist:"])
 
 
 di = DataInitializer()
@@ -221,11 +221,11 @@ with tab2:
     st.header("Confusion Matrix ")
     col1, col2 = st.columns(2)
     with col1:
-        conf_mat_fig = plt.figure(figsize=(6, 6))
-        ax1 = conf_mat_fig.add_subplot(111)
+        conf_mat_fig = plt.figure(figsize=(10, 10))
+        ax1 = conf_mat_fig.add_subplot(222)
         conf_matrix = confusion_matrix(
             y_test, prediction)
-        plt.imshow(conf_matrix, interpolation='nearest', cmap=plt.cm.Blues)
+        plt.imshow(conf_matrix, interpolation='nearest', cmap=plt.cm.Oranges)
         plt.title('Confusion Matrix (XGBoost)')
         plt.colorbar()
 
@@ -268,15 +268,33 @@ with tab3:
     col1, col2 = st.columns(2)
 
     with col1:
+        alias_names = {
+            'age': 'Age',
+            'gender': 'Gender',
+            'height': 'Height',
+            'weight': 'Weight',
+            'smoke': 'Smoker',
+            'alco': 'Alcohol Consumer',
+            'active': 'Excercise',
+            'bp_high': 'High Blood Pressure',
+            'bp_lo': 'Low Blood Pressure'
+        }
         for feature_name in data_frame.columns:
-            if feature_name not in ['cholesterol', 'gluc', 'diabetic']:
-                slider_value = st.slider(label=feature_name, min_value=float(data_frame[feature_name].min()),
-                                         max_value=float(data_frame[feature_name].max()))
-                sliders.append(slider_value)
+            if feature_name not in ['cholesterol', 'gluc', 'diabetic', 'cardio']:
+                if feature_name in ['gender', 'smoke', 'alco', 'active']:
+                    option = st.selectbox(label=alias_names.get(
+                        feature_name, feature_name), options=[0, 1])
+                    sliders.append(option)
+                    options[feature_name] = option
+                else:
+                    slider_value = st.slider(label=alias_names.get(feature_name, feature_name),
+                                             min_value=float(
+                                                 data_frame[feature_name].min()),
+                                             max_value=float(data_frame[feature_name].max()))
+                    sliders.append(slider_value)
             else:
-                # Use select box for features 'cholesterol', 'gluc', and 'diabetic'
-                # Assuming options are 1, 2, and 3
-                option = st.selectbox(label=feature_name, options=[1, 2, 3])
+                option = st.selectbox(label=alias_names.get(
+                    feature_name, feature_name), options=[1, 2, 3])
                 sliders.append(option)
                 options[feature_name] = option
 
