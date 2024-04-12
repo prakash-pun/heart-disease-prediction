@@ -5,6 +5,7 @@ from feature_engineering import FeatureEngines
 from models.read_dump_model import DumpTrainModel
 from model_tuners import ModelTuning
 from models.feature_importance_analysis import FeatureImportanceAnalysis
+from utils.runner import run_streamlit
 from visualize import Visualizer
 
 # Initializing Modules
@@ -32,7 +33,7 @@ plotter.heatmap(X_train, y_train)
 # Data Scaling
 scaled_train_data = extractor.scale_minmax(filled_x_train)
 scaled_test_data = extractor.scale_minmax(filled_x_test)
-plotter.heatmap(scaled_train_data, y_train)
+# plotter.heatmap(scaled_train_data, y_train)
 
 # Feature Extraction
 X_train = extractor.extract_feature(
@@ -77,3 +78,7 @@ feature_names = X_train.columns.tolist()
 tuners = ModelTuning(X_train, feature_names)
 sample_index = 0
 sample = X_test.values[sample_index]
+
+print("Running Streamlit...")
+run_streamlit()
+

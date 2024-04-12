@@ -12,7 +12,10 @@ from models.dash import samefeature, calculate_and_add_bmi, preprocess_input_dat
 from sklearn.preprocessing import MinMaxScaler
 from feature_engineering import FeatureEngines
 from data_preprocessing import DataProcessor
+from models.feature_importance_analysis import FeatureImportanceAnalysis
 from utils import DataInitializer
+# import scikitplot as skplt
+from lime import lime_tabular
 
 
 # Set the page config
@@ -76,6 +79,12 @@ rf_classif = load(f"{working_dir}/dump_model/xg_boost_model.joblib")
 # for checking if this is working or not
 prediction = rf_classif.predict(X_test)
 
+working_dir = os.path.dirname(os.path.abspath(__file__))
+rf_classif = load(f"{working_dir}/dump_model/xg_boost_model.joblib")
+
+# Instantiate the FeatureImportanceAnalysis class
+feature_analysis = FeatureImportanceAnalysis(
+    model_files={"XGBoost": "xg_boost_model.joblib"}, X_test=X_test, y_test=y_test)
 
 with tab1:
     st.header("📊  Data Visualizer")
@@ -125,7 +134,7 @@ with tab1:
 
 
 with tab2:
-    st.header("Confusion Matrix | Feature Importances")
+    st.header("Confusion Matrix ")
     col1, col2 = st.columns(2)
     with col1:
         conf_mat_fig = plt.figure(figsize=(6, 6))
@@ -155,6 +164,18 @@ with tab2:
     st.divider()
     st.header("Classification Report")
     st.code(classification_report(y_test, prediction))
+
+    st.header("Model Performance Metrics")
+
+    # Plot Feature Importance
+    feature_importance_plots = feature_analysis.plot_feature_importance()
+    for model_name, plot_path in feature_importance_plots.items():
+        st.image(plot_path, caption=f"Feature Importance - {model_name}")
+
+    # Permutation Importance Analysis
+    permutation_importance_plots = feature_analysis.permutation_importance_analysis()
+    for model_name, plot_path in permutation_importance_plots.items():
+        st.image(plot_path, caption=f"Permutation Importance - {model_name}")
 
 with tab3:
 
@@ -188,7 +209,7 @@ with tab3:
             scaled_row = (row[selected_features] -
                           min_vals) / (max_vals - min_vals)
             return scaled_row
-
+        # scaling input values
         scaled_input_values = min_max_scaler(input_data, min_vals, max_vals)
 
         input_data[selected_features] = scaled_input_values
@@ -215,17 +236,19 @@ with tab3:
             st.metric(label="Model Confidence", value="{:.2f} %".format(probability * 100),
                       delta="{:.2f} %".format((probability - 0.5) * 100))
 
-        explainer = lime.lime_tabular.LimeTabularExplainer(
+        # Explanation Section in sidebar
+        st.sidebar.title("Explanation")
+        # LIME Explanation
+        explainer = lime_tabular.LimeTabularExplainer(
             X_train.values, feature_names=X_train.columns)
-
-        # Generate explanation for a single instance
         exp = explainer.explain_instance(
             y.values[0], rf_classif.predict_proba, num_features=len(X_train.columns))
 
         # Display the explanation
-        st.header("Local Explanation")
-        st.write(exp.as_list())
+        st.sidebar.subheader("Local Explanation")
+        st.sidebar.write(exp.as_list())
 
-        # Visualize explanation
+        # Visualize explanation in main section
+        st.subheader("Local Explanation Visualization")
         fig = exp.as_pyplot_figure()
         st.pyplot(fig)
