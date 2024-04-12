@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
-from sklearn.metrics import roc_curve
-import pandas as pd
-from sklearn.metrics import f1_score, precision_score, accuracy_score, recall_score
+import numpy as np
+from sklearn.metrics import f1_score, precision_score, accuracy_score, recall_score, confusion_matrix
 import streamlit as st
+import io
+from PIL import Image
 def samefeature(x, y):
     training_feature_columns = x.columns
 
@@ -54,7 +55,7 @@ def encode_input_data(input_data, user_input):
     return input_data
 
 def plot_roc_curve(fpr, tpr):
-    plt.figure()
+    plt.figure()  # Create a new figure
     plt.plot(fpr, tpr, color='darkorange', lw=2)
     plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
     plt.xlabel('False Positive Rate')
@@ -63,7 +64,12 @@ def plot_roc_curve(fpr, tpr):
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
     plt.grid(True)
-    st.pyplot(plt)
+    # Save the plot to a bytes buffer
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    # Display the plot image with specified dimensions
+    st.image(buf, width=800, caption='ROC Curve')
 
 
 def calculate_metrics(y_true, y_pred, metric):
@@ -80,3 +86,36 @@ def calculate_metrics(y_true, y_pred, metric):
 
     return score
 
+def plot_confusion_matrix(y_test, prediction):
+    conf_mat_fig, ax = plt.subplots(figsize=(8, 8))  # Adjust the figsize here
+    conf_matrix = confusion_matrix(y_test, prediction)
+    im = ax.imshow(conf_matrix, interpolation='nearest', cmap=plt.cm.Oranges)
+    ax.set_title('Confusion Matrix (XGBoost)')
+
+    classes = ['Negative', 'Positive']
+    tick_marks = np.arange(len(classes))
+
+    ax.set_xticks(tick_marks)
+    ax.set_yticks(tick_marks)
+    ax.set_xticklabels(classes)
+    ax.set_yticklabels(classes)
+
+    for i in range(len(classes)):
+        for j in range(len(classes)):
+            ax.text(j, i, str(conf_matrix[i, j]), horizontalalignment="center")
+
+    ax.set_xlabel('Predicted label')
+    ax.set_ylabel('True label')
+    plt.tight_layout()
+
+    # Create colorbar
+    plt.colorbar(im, ax=ax)
+
+    # Convert Matplotlib figure to PIL image
+    buf = io.BytesIO()
+    conf_mat_fig.savefig(buf, format='png')
+    buf.seek(0)
+    image = Image.open(buf)
+
+    # Display image in Streamlit with specified width
+    st.image(image, width=800)
