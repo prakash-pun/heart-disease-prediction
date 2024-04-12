@@ -66,16 +66,17 @@ def plot_roc_curve(fpr, tpr):
     st.pyplot(plt)
 
 
-def calculate_metrics(y_true, y_pred):
-    f1 = f1_score(y_true, y_pred, average='weighted')
-    precision = precision_score(y_true, y_pred, average='weighted')
-    accuracy = accuracy_score(y_true, y_pred)
-    recall = recall_score(y_true, y_pred, average='weighted')
+def calculate_metrics(y_true, y_pred, metric):
+    if metric == 'F1 Score':
+        score = f1_score(y_true, y_pred, average='weighted')
+    elif metric == 'Precision':
+        score = precision_score(y_true, y_pred, average='weighted')
+    elif metric == 'Accuracy':
+        score = accuracy_score(y_true, y_pred)
+    elif metric == 'Recall':
+        score = recall_score(y_true, y_pred, average='weighted')
+    else:
+        score = None
 
-    metrics_df = pd.DataFrame({
-        'Metric': ['F1 Score', 'Precision', 'Accuracy', 'Recall'],
-        'Value': [f1, precision, accuracy, recall]
-    })
-
-    return metrics_df
+    return score
 

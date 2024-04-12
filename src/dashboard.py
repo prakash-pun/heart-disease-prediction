@@ -154,12 +154,18 @@ with tab2:
     st.header("Classification Report")
     st.code(classification_report(y_test, prediction))
 
-    # Calculate metrics
-    metrics_df = calculate_metrics(y_test, prediction)
+    # Get available metrics
+    available_metrics = ['F1 Score', 'Precision', 'Accuracy', 'Recall']
 
-    # Display metrics as a table
-    st.header("Evaluation Metrics")
-    st.write(metrics_df)
+    # Allow user to select metric
+    selected_metric = st.selectbox('Select Metric', available_metrics)
+
+    # Calculate selected metric
+    metric_score = calculate_metrics(y_test, prediction, selected_metric)
+
+    # Display metric score
+    st.header("Evaluation Metric")
+    st.write(f"{selected_metric}: {metric_score}")
 
     # Calculate ROC curve
     fpr, tpr, _ = roc_curve(y_test, probabilities[:, 1])
@@ -168,10 +174,6 @@ with tab2:
     st.header("ROC Curve")
     st.write("False Positive Rate vs True Positive Rate")
     plot_roc_curve(fpr, tpr)
-
-
-
-
 
     st.header("Model Performance Metrics")
 
