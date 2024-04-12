@@ -155,10 +155,14 @@ with tab2:
     st.header("Model Performance Metrics")
 
     # Plot Feature Importance
-    feature_analysis.plot_feature_importance()
+    feature_importance_plots = feature_analysis.plot_feature_importance()
+    for model_name, plot_path in feature_importance_plots.items():
+        st.image(plot_path, caption=f"Feature Importance - {model_name}")
 
     # Permutation Importance Analysis
-    feature_analysis.permutation_importance_analysis()
+    permutation_importance_plots = feature_analysis.permutation_importance_analysis()
+    for model_name, plot_path in permutation_importance_plots.items():
+        st.image(plot_path, caption=f"Permutation Importance - {model_name}")
 
 with tab3:
 
