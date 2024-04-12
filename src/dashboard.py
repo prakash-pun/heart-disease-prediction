@@ -184,9 +184,9 @@ with tab3:
         input_data = preprocess_input_data(input_data, filled_x_train)
         input_data = encode_input_data(input_data, options)
         print(input_data.to_string())
-        st.write(input_data)
+        # st.write(input_data)
         y = samefeature(X_train, input_data)
-        st.write(y)
+        # st.write(y)
 
     with col2:
         col1, col2 = st.columns(2, gap="medium")
@@ -204,10 +204,12 @@ with tab3:
             st.metric(label="Model Confidence", value="{:.2f} %".format(probability * 100),
                       delta="{:.2f} %".format((probability - 0.5) * 100))
 
-        explainer = lime.lime_tabular.LimeTabularExplainer(X_train.values, feature_names=X_train.columns)
+        explainer = lime.lime_tabular.LimeTabularExplainer(
+            X_train.values, feature_names=X_train.columns)
 
         # Generate explanation for a single instance
-        exp = explainer.explain_instance(y.values[0], rf_classif.predict_proba, num_features=len(X_train.columns))
+        exp = explainer.explain_instance(
+            y.values[0], rf_classif.predict_proba, num_features=len(X_train.columns))
 
         # Display the explanation
         st.header("Local Explanation")
@@ -216,5 +218,3 @@ with tab3:
         # Visualize explanation
         fig = exp.as_pyplot_figure()
         st.pyplot(fig)
-
-
