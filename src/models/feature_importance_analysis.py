@@ -3,6 +3,7 @@ import os
 import joblib
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.inspection import permutation_importance
 from utils import get_project_directory
 
@@ -54,6 +55,7 @@ class FeatureImportanceAnalysis:
             project_dir = get_project_directory()
 
             # Plot feature importance
+            sns.set(style="whitegrid", palette="coolwarm")
             plt.figure(figsize=(8, 6))
             plt.barh(feature_names, feature_importance)
             plt.xlabel('Feature Importance')
@@ -82,6 +84,7 @@ class FeatureImportanceAnalysis:
             project_dir = get_project_directory()
 
             # Plot permutation importance as bar graph
+            sns.set(style="whitegrid", palette="viridis")
             plt.figure(figsize=(8, 6))
             plt.barh(np.array(model["feature_names"])[
                      sorted_idx], result.importances_mean[sorted_idx])
