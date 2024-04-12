@@ -12,6 +12,8 @@ from feature_engineering import FeatureEngines
 from data_preprocessing import DataProcessor
 from utils import DataInitializer
 # import scikitplot as skplt
+import lime
+import lime.lime_tabular
 
 
 # Set the page config
@@ -201,3 +203,18 @@ with tab3:
         with col2:
             st.metric(label="Model Confidence", value="{:.2f} %".format(probability * 100),
                       delta="{:.2f} %".format((probability - 0.5) * 100))
+
+        explainer = lime.lime_tabular.LimeTabularExplainer(X_train.values, feature_names=X_train.columns)
+
+        # Generate explanation for a single instance
+        exp = explainer.explain_instance(y.values[0], rf_classif.predict_proba, num_features=len(X_train.columns))
+
+        # Display the explanation
+        st.header("Local Explanation")
+        st.write(exp.as_list())
+
+        # Visualize explanation
+        fig = exp.as_pyplot_figure()
+        st.pyplot(fig)
+
+
