@@ -1,4 +1,3 @@
-import io
 import os
 import joblib
 import numpy as np
@@ -6,13 +5,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.inspection import permutation_importance
 from utils import get_project_directory
-
-
-import numpy as np
-import os
-import joblib
-import matplotlib.pyplot as plt
-from sklearn.inspection import permutation_importance
 
 class FeatureImportanceAnalysis:
 
@@ -64,7 +56,7 @@ class FeatureImportanceAnalysis:
 
             plot_path = os.path.join(project_dir, f'slides_charts/{model_name}_feature_importance.png')
             plt.savefig(plot_path)
-            plt.close()
+            plt.show()
 
             # Store the plot path in the dictionary
             plots[model_name] = plot_path
@@ -94,7 +86,7 @@ class FeatureImportanceAnalysis:
 
             plot_path = os.path.join(project_dir, f'slides_charts/{model_name}_permutation_importance.png')
             plt.savefig(plot_path)
-            plt.close()
+            plt.show()
 
             # Store the plot path in the dictionary
             plots[model_name] = plot_path
