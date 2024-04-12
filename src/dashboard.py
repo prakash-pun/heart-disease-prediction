@@ -5,8 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from joblib import load
 import streamlit as st
-import lime
-import lime.lime_tabular
+from lime import lime_tabular
 from sklearn.metrics import classification_report, confusion_matrix
 from models.dash import samefeature, calculate_and_add_bmi, preprocess_input_data, encode_input_data
 from sklearn.preprocessing import MinMaxScaler
@@ -14,8 +13,7 @@ from feature_engineering import FeatureEngines
 from data_preprocessing import DataProcessor
 from models.feature_importance_analysis import FeatureImportanceAnalysis
 from utils import DataInitializer
-# import scikitplot as skplt
-from lime import lime_tabular
+import plotly.express as px
 
 
 # Set the page config
@@ -72,30 +70,116 @@ X_test = scaled_test_data[train_columns]
 
 
 working_dir = os.path.dirname(os.path.abspath(__file__))
-
-
 rf_classif = load(f"{working_dir}/dump_model/xg_boost_model.joblib")
 
 # for checking if this is working or not
 prediction = rf_classif.predict(X_test)
 
-working_dir = os.path.dirname(os.path.abspath(__file__))
-rf_classif = load(f"{working_dir}/dump_model/xg_boost_model.joblib")
-
 # Instantiate the FeatureImportanceAnalysis class
 feature_analysis = FeatureImportanceAnalysis(
     model_files={"XGBoost": "xg_boost_model.joblib"}, X_test=X_test, y_test=y_test)
 
+
 with tab1:
     st.header("📊  Data Visualizer")
-    col1, col2 = st.columns([2, 1])
+    col1, col2 = st.columns([1, 2])
+    col3, col4 = st.columns([2, 1])
 
     columns = data_frame.columns.tolist()
 
     with col1:
-        st.write(data_frame)
+        st.subheader("Total Dataset")
+        st.markdown(f"Total rows: {data_frame.shape[0]}")
+        attribute = st.selectbox("Select Attribute", [
+            "Gender", "Age", "Cholesterol", "Weight", "Diabetic", "Systolic Blood Pressure (bp_high)", "Smoking", "Activity"])
 
     with col2:
+        def create_bar_chart():
+            # Group data by gender and count occurrences
+            gender_counts = data_frame['gender'].map(
+                {1: 'Male', 2: 'Female'}).value_counts()
+
+            # Create bar chart
+            fig = px.bar(gender_counts, x=gender_counts.index,
+                         y=gender_counts.values, labels={'x': 'Gender', 'y': 'Count'})
+
+            # Update layout
+            fig.update_layout(title="Gender Distribution")
+
+            return fig
+
+        # Function to create interactive pie chart
+        def create_pie_chart():
+            # Group data by age group and count occurrences
+            age_bins = [30, 40, 50, 60, 70, 80, 90, 100]
+            age_labels = ['30-39', '40-49', '50-59',
+                          '60-69', '70-79', '80-89', '90-100']
+            data_frame['age_group'] = pd.cut(
+                data_frame['age'], bins=age_bins, labels=age_labels, right=False)
+            age_counts = data_frame['age_group'].value_counts()
+
+            # Create pie chart
+            fig = px.pie(age_counts, values=age_counts.values,
+                         names=age_counts.index, title="Age Distribution")
+
+            return fig
+
+        def create_chart(df):
+            if attribute == "Cholesterol":
+                # Group data by cholesterol level and count occurrences
+                cholesterol_counts = df['cholesterol'].value_counts()
+
+                # Create chart
+                title = "Cholesterol Distribution"
+                fig = px.bar(x=cholesterol_counts.index, y=cholesterol_counts.values, labels={
+                             'x': 'Cholesterol Level', 'y': 'Count'}, title=title)
+            elif attribute == "Weight":
+                # Create chart for weight distribution
+                fig = px.histogram(df, x='weight', title="Weight Distribution")
+            elif attribute == "Diabetic":
+                # Group data by diabetic status and count occurrences
+                diabetic_counts = df['diabetic'].value_counts()
+
+                # Create chart
+                title = "Diabetic Status Distribution"
+                fig = px.bar(x=diabetic_counts.index, y=diabetic_counts.values, labels={
+                             'x': 'Diabetic Status', 'y': 'Count'}, title=title)
+            elif attribute == "Systolic Blood Pressure (bp_high)":
+                # Create chart for bp_high distribution
+                fig = px.histogram(
+                    df, x='bp_high', title="Systolic Blood Pressure (bp_high) Distribution")
+            elif attribute == "Smoking":
+                # Group data by smoking status and count occurrences
+                smoking_counts = df['smoke'].value_counts()
+
+                # Create chart
+                title = "Smoking Status Distribution"
+                fig = px.bar(x=smoking_counts.index, y=smoking_counts.values, labels={
+                             'x': 'Smoking Status', 'y': 'Count'}, title=title)
+            elif attribute == "Activity":
+                # Group data by activity level and count occurrences
+                activity_counts = df['active'].map(
+                    {0: 'Inactive', 1: 'Active'}).value_counts()
+
+                # Create chart
+                title = "Activity Level Distribution"
+                fig = px.bar(x=activity_counts.index, y=activity_counts.values, labels={
+                             'x': 'Activity Level', 'y': 'Count'}, title=title)
+
+            return fig
+
+        # Display chart
+        if attribute == "Gender":
+            st.plotly_chart(create_bar_chart())
+        elif attribute == "Age":
+            st.plotly_chart(create_pie_chart())
+        else:
+            st.plotly_chart(create_chart(data_frame))
+
+    with col3:
+        st.write(data_frame)
+
+    with col4:
         # Allow the user to select columns for plotting
         x_axis = st.selectbox('Select the X-axis', options=columns+["None"])
         y_axis = st.selectbox('Select the Y-axis', options=columns+["None"])
