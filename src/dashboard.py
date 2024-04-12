@@ -5,25 +5,34 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from joblib import load
 import streamlit as st
+import lime
+import lime.lime_tabular
 from sklearn.metrics import classification_report, confusion_matrix
 from models.dash import samefeature, calculate_and_add_bmi, preprocess_input_data, encode_input_data
 from sklearn.preprocessing import MinMaxScaler
 from feature_engineering import FeatureEngines
 from data_preprocessing import DataProcessor
 from utils import DataInitializer
-# import scikitplot as skplt
-import lime
-import lime.lime_tabular
 
 
 # Set the page config
 st.set_page_config(page_title='Heart Diesease Prediction',
-                   layout='centered',
-                   page_icon='♥️')
+                   layout='wide',
+                   page_icon='♥️', initial_sidebar_state="expanded")
 
 st.title(
     "Heart Disease :red[Prediction] :bar_chart: :chart_with_upwards_trend:")
-st.markdown("Predict heart Type using different parameters")
+
+# Define custom CSS to reduce top padding
+custom_css = """
+<style>
+.st-emotion-cache-z5fcl4 {
+    padding-top: 2rem !important; /* Adjust the value as needed */
+}
+</style>
+"""
+
+st.markdown(custom_css, unsafe_allow_html=True)
 
 tab1, tab2, tab3 = st.tabs(
     ["Data :clipboard:", "Performance :weight_lifter:", "Local Performance :bicyclist:"])
@@ -70,7 +79,8 @@ prediction = rf_classif.predict(X_test)
 
 with tab1:
     st.header("📊  Data Visualizer")
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([2, 1])
+
     columns = data_frame.columns.tolist()
 
     with col1:
@@ -151,6 +161,7 @@ with tab3:
     sliders = []
     options = {}
     col1, col2 = st.columns(2)
+
     with col1:
         for feature_name in data_frame.columns:
             if feature_name not in ['cholesterol', 'gluc', 'diabetic']:
