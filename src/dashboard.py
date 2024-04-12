@@ -201,9 +201,7 @@ with tab3:
         input_data = preprocess_input_data(input_data, filled_x_train)
         input_data = encode_input_data(input_data, options)
         print(input_data.to_string())
-        st.write(input_data)
         y = samefeature(X_train, input_data)
-        st.write(y)
 
     with col2:
         col1, col2 = st.columns(2, gap="medium")
