@@ -3,6 +3,7 @@ from data_preprocessing import DataProcessor
 from feature_engineering import FeatureEngines
 from models.read_dump_model import DumpTrainModel
 from models.feature_importance_analysis import FeatureImportanceAnalysis
+from utils.runner import run_streamlit
 from visualize import Visualizer
 
 # Initializing Modules
@@ -30,7 +31,7 @@ plotter.heatmap(X_train, y_train)
 # Data Scaling
 scaled_train_data = extractor.scale_minmax(filled_x_train)
 scaled_test_data = extractor.scale_minmax(filled_x_test)
-plotter.heatmap(scaled_train_data, y_train)
+# plotter.heatmap(scaled_train_data, y_train)
 
 # Feature Extraction
 X_train = extractor.extract_feature(
@@ -70,4 +71,5 @@ feature_importance_analysis.plot_feature_importance()
 feature_importance_analysis.permutation_importance_analysis()
 
 
-# DASHBOARD
+print("Running Streamlit...")
+run_streamlit()
