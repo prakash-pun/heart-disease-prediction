@@ -13,8 +13,7 @@ from data_preprocessing import DataProcessor
 from models.feature_importance_analysis import FeatureImportanceAnalysis
 from utils import DataInitializer
 # import scikitplot as skplt
-import lime
-import lime.lime_tabular
+from lime import lime_tabular
 
 
 # Set the page config
@@ -195,7 +194,7 @@ with tab3:
             scaled_row = (row[selected_features] -
                           min_vals) / (max_vals - min_vals)
             return scaled_row
-
+        # scaling input values
         scaled_input_values = min_max_scaler(input_data, min_vals, max_vals)
 
         input_data[selected_features] = scaled_input_values
@@ -222,16 +221,18 @@ with tab3:
             st.metric(label="Model Confidence", value="{:.2f} %".format(probability * 100),
                       delta="{:.2f} %".format((probability - 0.5) * 100))
 
-        explainer = lime.lime_tabular.LimeTabularExplainer(X_train.values, feature_names=X_train.columns)
-
-        # Generate explanation for a single instance
+        # Explanation Section in sidebar
+        st.sidebar.title("Explanation")
+        # LIME Explanation
+        explainer = lime_tabular.LimeTabularExplainer(X_train.values, feature_names=X_train.columns)
         exp = explainer.explain_instance(y.values[0], rf_classif.predict_proba, num_features=len(X_train.columns))
 
         # Display the explanation
-        st.header("Local Explanation")
-        st.write(exp.as_list())
+        st.sidebar.subheader("Local Explanation")
+        st.sidebar.write(exp.as_list())
 
-        # Visualize explanation
+        # Visualize explanation in main section
+        st.subheader("Local Explanation Visualization")
         fig = exp.as_pyplot_figure()
         st.pyplot(fig)
 
