@@ -17,7 +17,7 @@ from lime import lime_tabular
 
 
 # Set the page config
-st.set_page_config(page_title='Heart Diesease Prediction',
+st.set_page_config(page_title='Cardio vascular Prediction',
                    layout='centered',
                    page_icon='♥️')
 
@@ -123,11 +123,11 @@ with tab2:
     st.header("Confusion Matrix ")
     col1, col2 = st.columns(2)
     with col1:
-        conf_mat_fig = plt.figure(figsize=(6, 6))
-        ax1 = conf_mat_fig.add_subplot(111)
+        conf_mat_fig = plt.figure(figsize=(10, 10))
+        ax1 = conf_mat_fig.add_subplot(222)
         conf_matrix = confusion_matrix(
             y_test, prediction)
-        plt.imshow(conf_matrix, interpolation='nearest', cmap=plt.cm.Blues)
+        plt.imshow(conf_matrix, interpolation='nearest', cmap=plt.cm.Oranges)
         plt.title('Confusion Matrix (XGBoost)')
         plt.colorbar()
 
@@ -169,15 +169,30 @@ with tab3:
     options = {}
     col1, col2 = st.columns(2)
     with col1:
+        alias_names = {
+            'age': 'Age',
+            'gender': 'Gender',
+            'height': 'Height',
+            'weight': 'Weight',
+            'smoke': 'Smoker',
+            'alco': 'Alcohol Consumer',
+            'active': 'Excercise',
+            'bp_high': 'High Blood Pressure',
+            'bp_lo': 'Low Blood Pressure'
+        }
         for feature_name in data_frame.columns:
-            if feature_name not in ['cholesterol', 'gluc', 'diabetic']:
-                slider_value = st.slider(label=feature_name, min_value=float(data_frame[feature_name].min()),
-                                         max_value=float(data_frame[feature_name].max()))
-                sliders.append(slider_value)
+            if feature_name not in ['cholesterol', 'gluc', 'diabetic', 'cardio']:
+                if feature_name in ['gender', 'smoke', 'alco', 'active']:
+                    option = st.selectbox(label=alias_names.get(feature_name, feature_name), options=[0, 1])
+                    sliders.append(option)
+                    options[feature_name] = option
+                else:
+                    slider_value = st.slider(label=alias_names.get(feature_name, feature_name),
+                                             min_value=float(data_frame[feature_name].min()),
+                                             max_value=float(data_frame[feature_name].max()))
+                    sliders.append(slider_value)
             else:
-                # Use select box for features 'cholesterol', 'gluc', and 'diabetic'
-                # Assuming options are 1, 2, and 3
-                option = st.selectbox(label=feature_name, options=[1, 2, 3])
+                option = st.selectbox(label=alias_names.get(feature_name, feature_name), options=[1, 2, 3])
                 sliders.append(option)
                 options[feature_name] = option
 
@@ -201,7 +216,7 @@ with tab3:
         input_data = preprocess_input_data(input_data, filled_x_train)
         input_data = encode_input_data(input_data, options)
         print(input_data.to_string())
-        y = samefeature(X_train, input_data)
+
 
     with col2:
         col1, col2 = st.columns(2, gap="medium")

@@ -1,9 +1,7 @@
-import pandas as pd
 from data_loading import DataInitializer
 from data_preprocessing import DataProcessor
 from feature_engineering import FeatureEngines
 from models.read_dump_model import DumpTrainModel
-from model_tuners import ModelTuning
 from models.feature_importance_analysis import FeatureImportanceAnalysis
 from utils.runner import run_streamlit
 from visualize import Visualizer
@@ -73,12 +71,5 @@ feature_importance_analysis.plot_feature_importance()
 feature_importance_analysis.permutation_importance_analysis()
 
 
-# TUNER
-feature_names = X_train.columns.tolist()
-tuners = ModelTuning(X_train, feature_names)
-sample_index = 0
-sample = X_test.values[sample_index]
-
 print("Running Streamlit...")
 run_streamlit()
-
