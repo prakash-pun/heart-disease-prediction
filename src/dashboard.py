@@ -1,20 +1,18 @@
 import os
-import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from joblib import load
 import streamlit as st
 import plotly.express as px
-from sklearn.metrics import classification_report, confusion_matrix, roc_curve
+from sklearn.metrics import classification_report, roc_curve
 from lime import lime_tabular
 from sklearn.preprocessing import MinMaxScaler
-from models.dash import samefeature, calculate_and_add_bmi, preprocess_input_data, encode_input_data, plot_roc_curve, calculate_metrics
+from models.dash import samefeature, calculate_and_add_bmi, preprocess_input_data, encode_input_data, plot_roc_curve, calculate_metrics, plot_confusion_matrix
 from models.feature_importance_analysis import FeatureImportanceAnalysis
 from feature_engineering import FeatureEngines
 from data_preprocessing import DataProcessor
 from utils import DataInitializer
-
 
 # Set the page config
 st.set_page_config(page_title='Heart Diesease Prediction',
@@ -222,36 +220,16 @@ with tab1:
 
 
 with tab2:
-    st.header("Confusion Matrix ")
-    col1, col2 = st.columns(2)
-    with col1:
-        conf_mat_fig = plt.figure(figsize=(10, 10))
-        ax1 = conf_mat_fig.add_subplot(222)
-        conf_matrix = confusion_matrix(
-            y_test, prediction)
-        plt.imshow(conf_matrix, interpolation='nearest', cmap=plt.cm.Oranges)
-        plt.title('Confusion Matrix (XGBoost)')
-        plt.colorbar()
+    st.header("Confusion Matrix")
+    plot_confusion_matrix(y_test, prediction)
 
-        classes = ['Negative', 'Positive']
-        tick_marks = np.arange(len(classes))
-
-        plt.xticks(tick_marks, classes)
-        plt.yticks(tick_marks, classes)
-
-        for i in range(len(classes)):
-            for j in range(len(classes)):
-                plt.text(j, i, str(conf_matrix[i, j]),
-                         horizontalalignment="center")
-
-        plt.xlabel('Predicted label')
-        plt.ylabel('True label')
-        plt.tight_layout()
-        plt.show()
-        st.pyplot(conf_mat_fig, use_container_width=True)
     st.divider()
-    st.header("Classification Report")
-    st.code(classification_report(y_test, prediction))
+    report = classification_report(y_test, prediction, output_dict=True)
+    df_report = pd.DataFrame(report).transpose()
+
+    # Display the DataFrame
+    st.header("XGBoost Classification Report")
+    st.table(df_report.style.set_table_styles([dict(selector="th", props=[('80px', '80px')])]))
 
     # Get available metrics
     available_metrics = ['F1 Score', 'Precision', 'Accuracy', 'Recall']
@@ -287,92 +265,92 @@ with tab2:
         st.image(plot_path, caption=f"Permutation Importance - {model_name}")
 
 with tab3:
-    # input data
-    sliders = []
-    options = {}
-    alias_names = {
-        'age': 'Age',
-        'gender': 'Gender',
-        'height': 'Height',
-        'weight': 'Weight',
-        'smoke': 'Smoker',
-        'alco': 'Alcohol Consumer',
-        'active': 'Excercise',
-        'bp_high': 'High Blood Pressure',
-        'bp_lo': 'Low Blood Pressure'
-    }
-    for feature_name in X_train1.columns:
-        if feature_name not in ['cholesterol', 'gluc', 'diabetic']:
-            if feature_name in ['gender', 'smoke', 'alco', 'active']:
-                option = st.selectbox(label=alias_names.get(
-                    feature_name, feature_name), options=[0, 1])
+    col1, col2 = st.columns(2, gap="medium")
+    with col1:
+
+        # input data
+        sliders = []
+        options = {}
+        alias_names = {
+            'age': 'Age',
+            'gender': 'Gender "1 - Women, 2 - Men"',
+            'height': 'Height',
+            'weight': 'Weight',
+            'smoke': 'Smoker',
+            'alco': 'Alcohol Consumer',
+            'active': 'Physically Active',
+            'bp_high': 'High Blood Pressure',
+            'bp_lo': 'Low Blood Pressure',
+            'cholesterol':'Cholesterol Level',
+            'gluc':'Glucose Level',
+            'diabetic':'Diabetic'
+        }
+        for feature_name in X_train1.columns:
+            if feature_name not in ['cholesterol', 'gluc', 'diabetic']:
+                if feature_name == 'gender':
+                    option = st.selectbox(label=alias_names.get(feature_name, feature_name), options=[1, 2])
+                    sliders.append(option)
+                    options[feature_name] = option
+                elif feature_name in ['smoke', 'alco', 'active']:
+                    option = st.selectbox(label=alias_names.get(feature_name, feature_name), options=[0, 1])
+                    sliders.append(option)
+                    options[feature_name] = option
+                else:
+                    slider_value = st.slider(label=alias_names.get(feature_name, feature_name),
+                                             min_value=float(X_train1[feature_name].min()),
+                                             max_value=float(X_train1[feature_name].max()))
+                    sliders.append(slider_value)
+            else:
+                option = st.selectbox(label=alias_names.get(feature_name, feature_name), options=[1, 2, 3])
                 sliders.append(option)
                 options[feature_name] = option
-            else:
-                slider_value = st.slider(label=alias_names.get(feature_name, feature_name),
-                                         min_value=float(
-                                             X_train1[feature_name].min()),
-                                         max_value=float(X_train1[feature_name].max()))
-                sliders.append(slider_value)
-        else:
-            option = st.selectbox(label=alias_names.get(
-                feature_name, feature_name), options=[1, 2, 3])
-            sliders.append(option)
-            options[feature_name] = option
 
-    input_data = pd.DataFrame([sliders], columns=X_train1.columns)
-    input_data = calculate_and_add_bmi(input_data)
-    print(input_data.to_string())
-    # scaling
-    selected_features = ['age', 'height',
-                         'weight', 'bp_high', 'bp_lo', 'bmi']
-    min_vals = filled_x_train[selected_features].min()
-    max_vals = filled_x_train[selected_features].max()
+        input_data = pd.DataFrame([sliders], columns=X_train1.columns)
+        input_data = calculate_and_add_bmi(input_data)
+        print(input_data.to_string())
+        # scaling
+        selected_features = ['age', 'height',
+                             'weight', 'bp_high', 'bp_lo', 'bmi']
+        min_vals = filled_x_train[selected_features].min()
+        max_vals = filled_x_train[selected_features].max()
 
-    def min_max_scaler(row, min_vals, max_vals):
-        scaled_row = (row[selected_features] -
-                      min_vals) / (max_vals - min_vals)
-        return scaled_row
-    # scaling input values
-    scaled_input_values = min_max_scaler(input_data, min_vals, max_vals)
+        def min_max_scaler(row, min_vals, max_vals):
+            scaled_row = (row[selected_features] -
+                          min_vals) / (max_vals - min_vals)
+            return scaled_row
+        # scaling input values
+        scaled_input_values = min_max_scaler(input_data, min_vals, max_vals)
 
-    input_data[selected_features] = scaled_input_values
-    input_data = preprocess_input_data(input_data, filled_x_train)
-    input_data = encode_input_data(input_data, options)
-    print(input_data.to_string())
-    # st.write(input_data)
-    y = samefeature(X_train, input_data)
-    # st.write(y)
-
-    # prediction
-    col1, col2 = st.columns(2, gap="medium")
-    prediction = rf_classif.predict(y)
-    # Adjust the prediction label based on the threshold
-    predicted_class_label = 1 if prediction[0] == 1 else 0
-    with col1:
-        st.markdown("### Model Prediction : <strong style='color:tomato;'>{}</strong>".format(
-            predicted_class_label), unsafe_allow_html=True)
-
-        probs = rf_classif.predict_proba(y)
-        probability = probs[0][prediction[0]]
-
+        input_data[selected_features] = scaled_input_values
+        input_data = preprocess_input_data(input_data, filled_x_train)
+        input_data = encode_input_data(input_data, options)
+        print(input_data.to_string())
+        # st.write(input_data)
+        y = samefeature(X_train, input_data)
+        # st.write(y)
     with col2:
-        st.metric(label="Model Confidence", value="{:.2f} %".format(probability * 100),
-                  delta="{:.2f} %".format((probability - 0.5) * 100))
+        # prediction
+        col1, col2 = st.columns(2, gap="medium")
+        prediction = rf_classif.predict(y)
+        # Adjust the prediction label based on the threshold
+        predicted_class_label = 1 if prediction[0] == 1 else 0
+        with col1:
+            st.markdown("### Model Prediction : <strong style='color:tomato;'>{}</strong>".format(
+                predicted_class_label), unsafe_allow_html=True)
 
-    # Explanation Section in sidebar
-    st.sidebar.title("Explanation")
-    # LIME Explanation
-    explainer = lime_tabular.LimeTabularExplainer(
-        X_train.values, feature_names=X_train.columns)
-    exp = explainer.explain_instance(
-        y.values[0], rf_classif.predict_proba, num_features=len(X_train.columns))
+            probs = rf_classif.predict_proba(y)
+            probability = probs[0][prediction[0]]
 
-    # Display the explanation
-    st.sidebar.subheader("Local Explanation")
-    st.sidebar.write(exp.as_list())
+        with col2:
+            st.metric(label="Model Confidence", value="{:.2f} %".format(probability * 100))
 
-    # Visualize explanation in main section
-    st.subheader("Local Explanation Visualization")
-    fig = exp.as_pyplot_figure()
-    st.pyplot(fig)
+        # LIME Explanation
+        explainer = lime_tabular.LimeTabularExplainer(
+            X_train.values, feature_names=X_train.columns)
+        exp = explainer.explain_instance(
+            y.values[0], rf_classif.predict_proba, num_features=len(X_train.columns))
+
+        # Visualize explanation in main section
+        st.subheader("Local Explanation Visualization")
+        fig = exp.as_pyplot_figure()
+        st.pyplot(fig)
