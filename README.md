@@ -11,7 +11,7 @@ git clone https://github.com/OpenMinds-LCIT/cardiovascular-disease-prediction.gi
 ## Working on Branch
 
 - When working on new task/feature, create a new branch then work on that branch. format of the branch `git branch <your_name-task/feature>`
-  - e.g. `git checkout -b prakash/data-cleaning-age`
+  - e.g. `git checkout -b your-name/data-cleaning-age`
 - Developer always have to pull `git pull` code from `main` branch and sync with it.
 - Make a PR(Pull Request) after completion of task/feature and always add a code reviewer in associated PR.
 - Make a habit to check on your PR, so that you can follow along with status, comments, tasks of your PR.
@@ -33,12 +33,16 @@ git pull # to pull new changes from github
 ## Folder Structure
 
 ```bash
-|____ data # Data sets e.g excel files
+|____ data # Data sets e.g excel files, csv
 |____ docs # Add your project report, task report e.g. word files
-|____ models # Trained and Serialized Models
 |____ notebooks # Jupter Notebooks
 |____ slides and charts # General analysis as charts in HTML/PDF/PPTS/IMAGES
 |____ src # Source code that is used in the project
+|____ .gitignore # ignore dir
+|____ requirements.txt # all the library used in the project
+|____ run.sh # bash script to run main.py
+|____ STANDARD.md # pep8 docs
+|____ stream.sh # bash script to run stream lit dashboard
 ```
 
 ## Work on Virtualenv
@@ -53,6 +57,18 @@ git pull # to pull new changes from github
 > pip freeze > requirements.txt # to update requirements.txt
 ```
 
+## Run the project
+
+```bash
+bash run.sh # run the project (main.py file)
+bash stream.sh # run the dashboard (dashboard.py file)
+
+or
+
+python src/main.py
+streamlit run src/dashboard.py
+```
+
 ## Collaborators
 
 [@amannain122](https://github.com/amannain122)  
@@ -62,11 +78,6 @@ git pull # to pull new changes from github
 [@prakash-pun](https://github.com/prakash-pun)  
 [@rutul7802](https://github.com/rutul7802)  
 [@Swethaloyalist](https://github.com/Swethaloyalist)  
-[@tirth-patel01](https://github.com/tirth-patel01)  
-[@whyteeth](https://github.com/whyteeth)
-
-```bash
-streamlit run streamlit-test.py
-```
+[@tirth-patel01](https://github.com/tirth-patel01)
 
 ### Happy Coding :smiley:

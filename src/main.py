@@ -20,23 +20,24 @@ X_train, X_test, y_train, y_test = reader.split_data()
 filled_x_train = processor.fill_data(data_frame=X_train)
 filled_x_test = processor.fill_data(data_frame=X_test)
 
-#Univariate Analysis
+# Univariate Analysis
 plotter.barplot(X_train)
 
-#Bivariate Analysis
+# Bivariate Analysis
 plotter.scatter(X_train, y_train)
 
-#MultiCollinearity
+# MultiCollinearity
 plotter.heatmap(X_train, y_train)
 
 # Data Scaling
 scaled_train_data = extractor.scale_minmax(filled_x_train)
 scaled_test_data = extractor.scale_minmax(filled_x_test)
-plotter.heatmap(scaled_train_data,y_train)
+plotter.heatmap(scaled_train_data, y_train)
 
 # Feature Extraction
-X_train = extractor.extract_feature(data_frame=scaled_train_data, y_train=y_train)
-plotter.heatmap(X_train,y_train)
+X_train = extractor.extract_feature(
+    data_frame=scaled_train_data, y_train=y_train)
+plotter.heatmap(X_train, y_train)
 train_columns = list(X_train.columns)
 X_test = scaled_test_data[train_columns]
 
@@ -49,7 +50,7 @@ result_lr = model.logistic_regression_model()
 # XGBoost
 xg_boost = model.xg_boost()
 
-#Results
+# Results
 plotter.plot_roc(
     fpr=xg_boost["test"]["fpr"], tpr=xg_boost["test"]["tpr"], auc_score=xg_boost["test"]["roc_auc"])
 plotter.plot_confusion_matrix(xg_boost["test"]["conf_matrix"])
@@ -71,7 +72,7 @@ feature_importance_analysis.plot_feature_importance()
 feature_importance_analysis.permutation_importance_analysis()
 
 
-#TUNER
+# TUNER
 feature_names = X_train.columns.tolist()
 tuners = ModelTuning(X_train, feature_names)
 sample_index = 0
@@ -80,6 +81,5 @@ sample = X_test.values[sample_index]
 # Explanation
 explanation = tuners.explainer.explain_instance(
     sample, xg_boost["predict"].predict_proba, num_features=len(feature_names))
-# print(explanation.as_list())
 
-#DASHBOARD
+# DASHBOARD
