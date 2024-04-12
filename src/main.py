@@ -5,13 +5,14 @@ from feature_engineering import FeatureEngines
 from models.read_dump_model import DumpTrainModel
 from model_tuners import ModelTuning
 from models.feature_importance_analysis import FeatureImportanceAnalysis
+from utils.runner import run_streamlit
 from visualize import Visualizer
 
 # Initializing Modules
 reader = DataInitializer()
 processor = DataProcessor()
 extractor = FeatureEngines()
-# plotter = Visualizer()
+plotter = Visualizer()
 
 # Data Preparation
 X_train, X_test, y_train, y_test = reader.split_data()
@@ -20,14 +21,14 @@ X_train, X_test, y_train, y_test = reader.split_data()
 filled_x_train = processor.fill_data(data_frame=X_train)
 filled_x_test = processor.fill_data(data_frame=X_test)
 
-# # Univariate Analysis
-# plotter.barplot(X_train)
-#
-# # Bivariate Analysis
-# plotter.scatter(X_train, y_train)
-#
-# # MultiCollinearity
-# plotter.heatmap(X_train, y_train)
+# Univariate Analysis
+plotter.barplot(X_train)
+
+# Bivariate Analysis
+plotter.scatter(X_train, y_train)
+
+# MultiCollinearity
+plotter.heatmap(X_train, y_train)
 
 # Data Scaling
 scaled_train_data = extractor.scale_minmax(filled_x_train)
@@ -37,7 +38,7 @@ scaled_test_data = extractor.scale_minmax(filled_x_test)
 # Feature Extraction
 X_train = extractor.extract_feature(
     data_frame=scaled_train_data, y_train=y_train)
-# plotter.heatmap(X_train, y_train)
+plotter.heatmap(X_train, y_train)
 train_columns = list(X_train.columns)
 X_test = scaled_test_data[train_columns]
 
@@ -50,10 +51,10 @@ result_lr = model.logistic_regression_model()
 # XGBoost
 xg_boost = model.xg_boost()
 
-# # Results
-# plotter.plot_roc(
-#     fpr=xg_boost["test"]["fpr"], tpr=xg_boost["test"]["tpr"], auc_score=xg_boost["test"]["roc_auc"])
-# plotter.plot_confusion_matrix(xg_boost["test"]["conf_matrix"])
+# Results
+plotter.plot_roc(
+    fpr=xg_boost["test"]["fpr"], tpr=xg_boost["test"]["tpr"], auc_score=xg_boost["test"]["roc_auc"])
+plotter.plot_confusion_matrix(xg_boost["test"]["conf_matrix"])
 
 # Gradient Bosting Machine
 gbm = model.gbm_model()
@@ -77,3 +78,7 @@ feature_names = X_train.columns.tolist()
 tuners = ModelTuning(X_train, feature_names)
 sample_index = 0
 sample = X_test.values[sample_index]
+
+print("Running Streamlit...")
+run_streamlit()
+
