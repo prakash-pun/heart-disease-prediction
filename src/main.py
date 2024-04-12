@@ -77,9 +77,3 @@ feature_names = X_train.columns.tolist()
 tuners = ModelTuning(X_train, feature_names)
 sample_index = 0
 sample = X_test.values[sample_index]
-
-# Explanation
-explanation = tuners.explainer.explain_instance(
-    sample, xg_boost["predict"].predict_proba, num_features=len(feature_names))
-
-# DASHBOARD

@@ -6,6 +6,12 @@ from sklearn.inspection import permutation_importance
 from utils import get_project_directory
 
 
+import numpy as np
+import os
+import joblib
+import matplotlib.pyplot as plt
+from sklearn.inspection import permutation_importance
+
 class FeatureImportanceAnalysis:
 
     def __init__(self, model_files, X_test, y_test):
@@ -54,6 +60,7 @@ class FeatureImportanceAnalysis:
                 f'{project_dir}/slides_charts/{model_name}_feature_importance.png')
             plt.show()
             plt.close()
+
 
     def permutation_importance_analysis(self):
         models = self.load_models()
