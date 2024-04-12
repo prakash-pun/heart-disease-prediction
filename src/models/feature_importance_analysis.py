@@ -1,3 +1,4 @@
+import io
 import os
 import joblib
 import numpy as np
@@ -45,6 +46,8 @@ class FeatureImportanceAnalysis:
 
     def plot_feature_importance(self):
         models = self.load_models()
+        plots = {}
+
         for model_name, model in models.items():
             feature_importance = model["feature_importance"]
             feature_names = model["feature_names"]
@@ -56,14 +59,21 @@ class FeatureImportanceAnalysis:
             plt.xlabel('Feature Importance')
             plt.title(f'Feature Importance - {model_name}')
             plt.tight_layout()
-            plt.savefig(
-                f'{project_dir}/slides_charts/{model_name}_feature_importance.png')
-            plt.show()
+
+            plot_path = os.path.join(project_dir, f'slides_charts/{model_name}_feature_importance.png')
+            plt.savefig(plot_path)
             plt.close()
+
+            # Store the plot path in the dictionary
+            plots[model_name] = plot_path
+
+        return plots
 
 
     def permutation_importance_analysis(self):
         models = self.load_models()
+        plots = {}
+
         for model_name, model in models.items():
             # Permutation importance analysis
             result = permutation_importance(
@@ -78,7 +88,12 @@ class FeatureImportanceAnalysis:
             plt.xlabel('Permutation Importance')
             plt.title(f'Permutation Importances - {model_name}')
             plt.tight_layout()
-            plt.savefig(
-                f'{project_dir}/slides_charts/{model_name}_permutation_importance.png')
-            plt.show()
+
+            plot_path = os.path.join(project_dir, f'slides_charts/{model_name}_permutation_importance.png')
+            plt.savefig(plot_path)
             plt.close()
+
+            # Store the plot path in the dictionary
+            plots[model_name] = plot_path
+
+        return plots
