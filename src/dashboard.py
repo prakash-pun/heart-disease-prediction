@@ -5,14 +5,13 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from joblib import load
 import streamlit as st
-from sklearn.metrics import classification_report, confusion_matrix
-from models.dash import samefeature, calculate_and_add_bmi, preprocess_input_data, encode_input_data
+from sklearn.metrics import classification_report, confusion_matrix, roc_curve
+from models.dash import samefeature, calculate_and_add_bmi, preprocess_input_data, encode_input_data, plot_roc_curve, calculate_metrics
 from sklearn.preprocessing import MinMaxScaler
 from feature_engineering import FeatureEngines
 from data_preprocessing import DataProcessor
 from models.feature_importance_analysis import FeatureImportanceAnalysis
 from utils import DataInitializer
-# import scikitplot as skplt
 from lime import lime_tabular
 
 
@@ -36,6 +35,7 @@ fe = FeatureEngines()
 data_frame = di.get_data()
 
 X_train, X_test, y_train, y_test = di.split_data()
+X_train1, X_test1, y_train1, y_test1 = di.split_data()
 
 # Data Increment
 X_train = pd.concat([X_train, X_train], ignore_index=False)
@@ -65,7 +65,10 @@ working_dir = os.path.dirname(os.path.abspath(__file__))
 rf_classif = load(f"{working_dir}/dump_model/xg_boost_model.joblib")
 
 # for checking if this is working or not
-prediction = rf_classif.predict(X_test)
+#prediction = rf_classif.predict(X_test)
+probabilities = rf_classif.predict_proba(X_test)
+prediction = probabilities.argmax(axis=1)
+
 
 working_dir = os.path.dirname(os.path.abspath(__file__))
 rf_classif = load(f"{working_dir}/dump_model/xg_boost_model.joblib")
@@ -151,6 +154,25 @@ with tab2:
     st.header("Classification Report")
     st.code(classification_report(y_test, prediction))
 
+    # Calculate metrics
+    metrics_df = calculate_metrics(y_test, prediction)
+
+    # Display metrics as a table
+    st.header("Evaluation Metrics")
+    st.write(metrics_df)
+
+    # Calculate ROC curve
+    fpr, tpr, _ = roc_curve(y_test, probabilities[:, 1])
+
+    # Display ROC curve
+    st.header("ROC Curve")
+    st.write("False Positive Rate vs True Positive Rate")
+    plot_roc_curve(fpr, tpr)
+
+
+
+
+
     st.header("Model Performance Metrics")
 
     # Plot Feature Importance
@@ -164,89 +186,89 @@ with tab2:
         st.image(plot_path, caption=f"Permutation Importance - {model_name}")
 
 with tab3:
-
+    #input data
     sliders = []
     options = {}
-    col1, col2 = st.columns(2)
-    with col1:
-        alias_names = {
-            'age': 'Age',
-            'gender': 'Gender',
-            'height': 'Height',
-            'weight': 'Weight',
-            'smoke': 'Smoker',
-            'alco': 'Alcohol Consumer',
-            'active': 'Excercise',
-            'bp_high': 'High Blood Pressure',
-            'bp_lo': 'Low Blood Pressure'
-        }
-        for feature_name in data_frame.columns:
-            if feature_name not in ['cholesterol', 'gluc', 'diabetic', 'cardio']:
-                if feature_name in ['gender', 'smoke', 'alco', 'active']:
-                    option = st.selectbox(label=alias_names.get(feature_name, feature_name), options=[0, 1])
-                    sliders.append(option)
-                    options[feature_name] = option
-                else:
-                    slider_value = st.slider(label=alias_names.get(feature_name, feature_name),
-                                             min_value=float(data_frame[feature_name].min()),
-                                             max_value=float(data_frame[feature_name].max()))
-                    sliders.append(slider_value)
-            else:
-                option = st.selectbox(label=alias_names.get(feature_name, feature_name), options=[1, 2, 3])
+    alias_names = {
+        'age': 'Age',
+        'gender': 'Gender',
+        'height': 'Height',
+        'weight': 'Weight',
+        'smoke': 'Smoker',
+        'alco': 'Alcohol Consumer',
+        'active': 'Excercise',
+        'bp_high': 'High Blood Pressure',
+        'bp_lo': 'Low Blood Pressure'
+    }
+    for feature_name in X_train1.columns:
+        if feature_name not in ['cholesterol', 'gluc', 'diabetic']:
+            if feature_name in ['gender', 'smoke', 'alco', 'active']:
+                option = st.selectbox(label=alias_names.get(feature_name, feature_name), options=[0, 1])
                 sliders.append(option)
                 options[feature_name] = option
+            else:
+                slider_value = st.slider(label=alias_names.get(feature_name, feature_name),
+                                         min_value=float(X_train1[feature_name].min()),
+                                         max_value=float(X_train1[feature_name].max()))
+                sliders.append(slider_value)
+        else:
+            option = st.selectbox(label=alias_names.get(feature_name, feature_name), options=[1, 2, 3])
+            sliders.append(option)
+            options[feature_name] = option
 
-        input_data = pd.DataFrame([sliders], columns=data_frame.columns)
-        input_data = calculate_and_add_bmi(input_data)
-        print(input_data.to_string())
-        # scaling
-        selected_features = ['age', 'height',
-                             'weight', 'bp_high', 'bp_lo', 'bmi']
-        min_vals = filled_x_train[selected_features].min()
-        max_vals = filled_x_train[selected_features].max()
+    input_data = pd.DataFrame([sliders], columns=X_train1.columns)
+    input_data = calculate_and_add_bmi(input_data)
+    print(input_data.to_string())
+    # scaling
+    selected_features = ['age', 'height',
+                         'weight', 'bp_high', 'bp_lo', 'bmi']
+    min_vals = filled_x_train[selected_features].min()
+    max_vals = filled_x_train[selected_features].max()
 
-        def min_max_scaler(row, min_vals, max_vals):
-            scaled_row = (row[selected_features] -
-                          min_vals) / (max_vals - min_vals)
-            return scaled_row
-        # scaling input values
-        scaled_input_values = min_max_scaler(input_data, min_vals, max_vals)
+    def min_max_scaler(row, min_vals, max_vals):
+        scaled_row = (row[selected_features] -
+                      min_vals) / (max_vals - min_vals)
+        return scaled_row
+    # scaling input values
+    scaled_input_values = min_max_scaler(input_data, min_vals, max_vals)
 
-        input_data[selected_features] = scaled_input_values
-        input_data = preprocess_input_data(input_data, filled_x_train)
-        input_data = encode_input_data(input_data, options)
-        print(input_data.to_string())
+    input_data[selected_features] = scaled_input_values
+    input_data = preprocess_input_data(input_data, filled_x_train)
+    input_data = encode_input_data(input_data, options)
+    print(input_data.to_string())
+    # st.write(input_data)
+    y = samefeature(X_train, input_data)
+    # st.write(y)
 
+    #prediction
+    col1, col2 = st.columns(2, gap="medium")
+    prediction = rf_classif.predict(y)
+    # Adjust the prediction label based on the threshold
+    predicted_class_label = 1 if prediction[0] == 1 else 0
+    with col1:
+        st.markdown("### Model Prediction : <strong style='color:tomato;'>{}</strong>".format(
+            predicted_class_label), unsafe_allow_html=True)
+
+        probs = rf_classif.predict_proba(y)
+        probability = probs[0][prediction[0]]
 
     with col2:
-        col1, col2 = st.columns(2, gap="medium")
-        prediction = rf_classif.predict(y)
-        # Adjust the prediction label based on the threshold
-        predicted_class_label = 1 if prediction[0] == 1 else 0
-        with col1:
-            st.markdown("### Model Prediction : <strong style='color:tomato;'>{}</strong>".format(
-                predicted_class_label), unsafe_allow_html=True)
+        st.metric(label="Model Confidence", value="{:.2f} %".format(probability * 100),
+                  delta="{:.2f} %".format((probability - 0.5) * 100))
 
-            probs = rf_classif.predict_proba(y)
-            probability = probs[0][prediction[0]]
+    # Explanation Section in sidebar
+    st.sidebar.title("Explanation")
+    # LIME Explanation
+    explainer = lime_tabular.LimeTabularExplainer(X_train.values, feature_names=X_train.columns)
+    exp = explainer.explain_instance(y.values[0], rf_classif.predict_proba, num_features=len(X_train.columns))
 
-        with col2:
-            st.metric(label="Model Confidence", value="{:.2f} %".format(probability * 100),
-                      delta="{:.2f} %".format((probability - 0.5) * 100))
+    # Display the explanation
+    st.sidebar.subheader("Local Explanation")
+    st.sidebar.write(exp.as_list())
 
-        # Explanation Section in sidebar
-        st.sidebar.title("Explanation")
-        # LIME Explanation
-        explainer = lime_tabular.LimeTabularExplainer(X_train.values, feature_names=X_train.columns)
-        exp = explainer.explain_instance(y.values[0], rf_classif.predict_proba, num_features=len(X_train.columns))
-
-        # Display the explanation
-        st.sidebar.subheader("Local Explanation")
-        st.sidebar.write(exp.as_list())
-
-        # Visualize explanation in main section
-        st.subheader("Local Explanation Visualization")
-        fig = exp.as_pyplot_figure()
-        st.pyplot(fig)
+    # Visualize explanation in main section
+    st.subheader("Local Explanation Visualization")
+    fig = exp.as_pyplot_figure()
+    st.pyplot(fig)
 
 
