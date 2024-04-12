@@ -11,8 +11,8 @@ from scale import scale_minmax
 X_train, X_test, y_train, y_test = split_data()
 
 # Data Increment
-#X_train = pd.concat([X_train, X_train], ignore_index=False)
-#y_train = pd.concat([y_train, y_train], ignore_index=False)
+# X_train = pd.concat([X_train, X_train], ignore_index=False)
+# y_train = pd.concat([y_train, y_train], ignore_index=False)
 
 # Data Filling
 filled_x_train = fill_data(data_frame=X_train)
@@ -47,10 +47,9 @@ explainer = lime.lime_tabular.LimeTabularExplainer(X_train.values,
 sample = X_test.values[1]
 for i in range(5):
     explanation = explainer.explain_instance(
-    sample, result_lr["predict"].predict_proba, num_features=len(feature_names))
+        sample, result_lr["predict"].predict_proba, num_features=len(feature_names))
 # Display the explanation
-    print(i,explanation.as_list())
-
+    print(i, explanation.as_list())
 
 
 metrics = {

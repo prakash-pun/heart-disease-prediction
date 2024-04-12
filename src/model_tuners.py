@@ -26,7 +26,6 @@ class ModelTuning():
         return explanation
 
     def plot_feature_importance(self, model_result, file_name, top_n=10, file_format='png'):
-        print(model_result)
         if isinstance(model_result, dict):
             feature_importance = model_result["feature_importance"]
             if feature_importance is not None:
