@@ -17,7 +17,7 @@ from lime import lime_tabular
 
 
 # Set the page config
-st.set_page_config(page_title='Heart Diesease Prediction',
+st.set_page_config(page_title='Cardio vascular Prediction',
                    layout='centered',
                    page_icon='♥️')
 
@@ -169,18 +169,30 @@ with tab3:
     options = {}
     col1, col2 = st.columns(2)
     with col1:
+        alias_names = {
+            'age': 'Age',
+            'gender': 'Gender',
+            'height': 'Height',
+            'weight': 'Weight',
+            'smoke': 'Smoker',
+            'alco': 'Alcohol Consumer',
+            'active': 'Excercise',
+            'bp_high': 'High Blood Pressure',
+            'bp_lo': 'Low Blood Pressure'
+        }
         for feature_name in data_frame.columns:
             if feature_name not in ['cholesterol', 'gluc', 'diabetic', 'cardio']:
                 if feature_name in ['gender', 'smoke', 'alco', 'active']:
-                    option = st.selectbox(label=feature_name, options=[0, 1])
+                    option = st.selectbox(label=alias_names.get(feature_name, feature_name), options=[0, 1])
                     sliders.append(option)
                     options[feature_name] = option
                 else:
-                    slider_value = st.slider(label=feature_name, min_value=float(data_frame[feature_name].min()),
-                                         max_value=float(data_frame[feature_name].max()))
+                    slider_value = st.slider(label=alias_names.get(feature_name, feature_name),
+                                             min_value=float(data_frame[feature_name].min()),
+                                             max_value=float(data_frame[feature_name].max()))
                     sliders.append(slider_value)
             else:
-                option = st.selectbox(label=feature_name, options=[1, 2, 3])
+                option = st.selectbox(label=alias_names.get(feature_name, feature_name), options=[1, 2, 3])
                 sliders.append(option)
                 options[feature_name] = option
 
