@@ -4,6 +4,12 @@ import joblib
 import matplotlib.pyplot as plt
 from sklearn.inspection import permutation_importance
 
+import numpy as np
+import os
+import joblib
+import matplotlib.pyplot as plt
+from sklearn.inspection import permutation_importance
+
 class FeatureImportanceAnalysis:
 
     def __init__(self, model_files, X_test, y_test):
@@ -51,6 +57,7 @@ class FeatureImportanceAnalysis:
             plt.show()
             plt.close()
 
+
     def permutation_importance_analysis(self):
         models = self.load_models()
         for model_name, model in models.items():
@@ -67,5 +74,3 @@ class FeatureImportanceAnalysis:
             plt.savefig(f'{model_name}_permutation_importance.png')
             plt.show()
             plt.close()
-
-
