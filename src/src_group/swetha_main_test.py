@@ -1,80 +1,129 @@
-from feature_extraction import extract_feature
-from split_dataset import split_data
-from fill_data import fill_data
-from scale import scale_minmax
-from models.swetha_train import TrainModel
-from utils import generate_table
-import pandas as pd
-from model_tuners import train_lime_explainer, explain_prediction
-from feature_imp_analysis import plot_feature_importance, calculate_feature_importance
+from src.data_loading import DataInitializer
+from src.data_preprocessing import DataProcessor
+from src.feature_engineering import FeatureEngines
+from src.visualize import Visualizer
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from models.read_dump_model import DumpTrainModel
+from models.feature_importance_analysis import FeatureImportanceAnalysis
+from utils.runner import run_streamlit
+from xgboost import XGBClassifier
+from sklearn.model_selection import GridSearchCV
+from sklearn.feature_selection import SelectFromModel
 
-X_train, X_test, y_train, y_test = split_data()
 
-#Data Increment
-X_train = pd.concat([X_train, X_train], ignore_index=False)
-y_train = pd.concat([y_train, y_train], ignore_index=False)
+
+# Initializing Modules
+reader = DataInitializer()
+processor = DataProcessor()
+extractor = FeatureEngines()
+plotter = Visualizer()
+
+# Data Preparation
+X_train, X_test, y_train, y_test = reader.split_data()
 
 # Data Filling
-filled_x_train = fill_data(data_frame=X_train)
-filled_x_test = fill_data(data_frame=X_test)
+filled_x_train = processor.fill_data(data_frame=X_train)
+filled_x_test = processor.fill_data(data_frame=X_test)
+
+# Univariate Analysis
+plotter.barplot(X_train)
+
+# Bivariate Analysis
+plotter.scatter(X_train, y_train)
+
+# MultiCollinearity
+plotter.heatmap(X_train, y_train)
 
 # Data Scaling
-scaled_train_data = scale_minmax(filled_x_train)
-scaled_test_data = scale_minmax(filled_x_test)
+scaled_train_data = extractor.scale_minmax(filled_x_train)
+scaled_test_data = extractor.scale_minmax(filled_x_test)
+# plotter.heatmap(scaled_train_data, y_train)
 
-# Features
-X_train = extract_feature(data_frame=scaled_train_data, y_train=y_train)
-X_test = extract_feature(data_frame=scaled_test_data, y_train=y_test)
+# Feature Extraction
+X_train = extractor.extract_feature(
+    data_frame=scaled_train_data, y_train=y_train)
+plotter.heatmap(X_train, y_train)
+train_columns = list(X_train.columns)
+X_test = scaled_test_data[train_columns]
 
-# Train Models
-model = TrainModel(X_train, X_test, y_train, y_test)
+# MODELS
+model = DumpTrainModel(X_train, X_test, y_train, y_test)
 
 # Logistic Regression
 result_lr = model.logistic_regression_model()
-print("Logistic Regression:", result_lr)
 
-#XGBoost
+# XGBoost
 xg_boost = model.xg_boost()
-print("XGBoost_CLF ", xg_boost)
 
-# Performing lime on Xgboost
-# feature_names=X_train.columns.tolist()
-# sample_index = 0
-# Train a LIME explainer
-# explainer = train_lime_explainer(X_train, feature_names)
-#
-# # Explain a prediction
-# sample = X_test[sample_index]
-# explanation = explain_prediction(explainer, sample, model.xgboost, len(feature_names))
-#
-# Display the explanation
-# explanation.show_in_notebook()
+# Results
+plotter.plot_roc(
+    fpr=xg_boost["test"]["fpr"], tpr=xg_boost["test"]["tpr"], auc_score=xg_boost["test"]["roc_auc"])
+plotter.plot_confusion_matrix(xg_boost["test"]["conf_matrix"])
 
-
-
-#Gradient Bosting Machine
+# Gradient Bosting Machine
 gbm = model.gbm_model()
-print("Gradient Boosting: ", gbm)
 
-metrics = {
-    "Logistic Regression Train": list(result_lr[0]),
-    "Logistic Regression Test": list(result_lr[1]),
-    "XGBoost_CLF Train": list(xg_boost[0]),
-    "XGBoost_CLF Test": list(xg_boost[1]),
-    "Gradient Boosting Train": list(gbm[0]),
-    "Gradient Boosting Test": list(gbm[1]),
+reader.generate_table(result_lr, xg_boost, gbm)
+
+# FEATURE IMPORTANCE
+model_files = {
+    "Logistic Regression": "logistic_model.joblib",
+    "XGBoost": "xg_boost_model.joblib",
+    "Gradient Boosting": "gbm_model.joblib"
 }
+feature_importance_analysis = FeatureImportanceAnalysis(
+    model_files, X_test, y_test)
+feature_importance_analysis.plot_feature_importance()
+feature_importance_analysis.permutation_importance_analysis()
 
-generate_table(metrics)
 
-feature_names = X_train.columns.tolist()
 
-# Plotting
-plot_feature_importance(model.logistic_regression_model(), feature_names, file_name='log_plot')
-feature_importance_lr = calculate_feature_importance(model.logistic_regression_model(), feature_names)
 
-plot_feature_importance(xg_boost, feature_names, file_name='xgb_plot')
-feature_importance_xgb = calculate_feature_importance(xg_boost, feature_names)
+# most important features
+feature_importances = feature_importance_analysis.xg_boost()["feature_importance"]
+top_features = [feature_name for _, feature_name in sorted(zip(feature_importances, feature_importance_analysis.xg_boost()["feature_names"]), reverse=True)][:3]
 
-plot_feature_importance(gbm, feature_names, file_name='gbm_plot')
-feature_importance_gbm = calculate_feature_importance(gbm, feature_names)
+X_train_new = X_train.copy()
+X_train_new['top_features_combined'] = X_train[top_features[0]] * X_train[top_features[1]] * X_train[top_features[2]]
+
+X_test_new = X_test.copy()
+X_test_new['top_features_combined'] = X_test[top_features[0]] * X_test[top_features[1]] * X_test[top_features[2]]
+
+# Tune the XGBoost
+xgb = XGBClassifier()
+param_grid = {
+    'max_depth': [3, 5, 7],
+    'learning_rate': [0.01, 0.05, 0.1],
+    'n_estimators': [100, 200, 300]
+}
+grid_search = GridSearchCV(xgb, param_grid, cv=5, scoring='roc_auc')
+grid_search.fit(X_train_new, y_train)
+best_xgb_model = grid_search.best_estimator_
+
+
+
+
+# less important features
+feature_importances = feature_importance_analysis.xg_boost()["feature_importance"]
+less_important_features = [feature_name for _, feature_name in sorted(zip(feature_importances, feature_importance_analysis.xg_boost()["feature_names"]))][:3]
+
+xgb = XGBClassifier()
+selector = SelectFromModel(xgb, prefit=True, threshold='mean')
+X_train_reduced = selector.transform(X_train)
+X_test_reduced = selector.transform(X_test)
+
+# Tune the XGBoost model
+param_grid = {
+    'max_depth': [3, 5, 7],
+    'learning_rate': [0.01, 0.05, 0.1],
+    'n_estimators': [100, 200, 300]
+}
+grid_search = GridSearchCV(xgb, param_grid, cv=5, scoring='roc_auc')
+grid_search.fit(X_train_reduced, y_train)
+best_xgb_model = grid_search.best_estimator_
+
+
+print("Running Streamlit...")
+run_streamlit()
