@@ -69,15 +69,4 @@ python src/main.py
 streamlit run src/dashboard.py
 ```
 
-## Collaborators
-
-[@amannain122](https://github.com/amannain122)  
-[@bikkysr](https://github.com/bikkysr)  
-[@gaurav809](https://github.com/gaurav809)  
-[@Janki-31](https://github.com/Janki-31)  
-[@prakash-pun](https://github.com/prakash-pun)  
-[@rutul7802](https://github.com/rutul7802)  
-[@Swethaloyalist](https://github.com/Swethaloyalist)  
-[@tirth-patel01](https://github.com/tirth-patel01)
-
 ### Happy Coding :smiley:
